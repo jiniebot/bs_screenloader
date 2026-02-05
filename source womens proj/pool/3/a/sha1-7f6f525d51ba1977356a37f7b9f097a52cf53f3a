@@ -1,0 +1,211 @@
+{
+  "partner": "Bose",
+  "version": "0.0.6",
+  "product": [
+    {
+      "productName": "Wolfcastle Family",
+      "displayName": "USB Audio+HID for Bluetooth products",
+      "productClass": "Bluetooth_Headphones",
+      "isAudioDevice": true,
+      "tapProtocol": "HID",
+      "usbAudioInterfaceIndex": "0",
+      "usbTapInterfaceIndex": "2",
+      "usbToSerial": [
+        {
+          "registryKey": "hotplug_dev:05a7:40fe",
+          "registryValue": "hid_mode_switch"
+        },
+        {
+          "registryKey": "hotplug_dev:05a7:40fa",
+          "registryValue": "hid_mode_switch"
+        }
+      ],
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    },
+    {
+      "productName": "BMAP Spitfire Family-HID",
+      "displayName": "BMAP Spitfire USB Audio+HID",
+      "productClass": "BMAP Spitfire Chip Products",
+      "isAudioDevice": true,
+      "bmapProtocol": "HID",
+      "tapProtocol": "HID",
+      "usbAudioInterfaceIndex": "0",
+      "usbTapInterfaceIndex": "2",
+      "usbInternalHub": "/1",
+      "usbToSerial": {
+        "registryKey": "hotplug_dev:05a7:40fc",
+        "registryValue": "hid_mode_switch"
+      },
+      "commandLibrarySupport": "BMAP",
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    },
+    {
+      "productName": "BMAP Crescendo Family-HID",
+      "displayName": "BMAP Crescendo USB Audio+HID",
+      "productClass": "BMAP Crescendo CSR Chip Products",
+      "isAudioDevice": true,
+      "bmapProtocol": "HID",
+      "tapProtocol": "HID",
+      "usbAudioInterfaceIndex": "0",
+      "usbTapInterfaceIndex": "2",
+      "usbInternalHub": "/1",
+      "usbToSerial": {
+        "registryKey": "hotplug_dev:05a7:40fc",
+        "registryValue": "hid_mode_switch"
+      },
+      "commandLibrarySupport": "BMAP",
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    },
+    {
+      "productName": "Crescendo Family-HID",
+      "displayName": "Crescendo USB Audio+HID",
+      "productClass": "Crescendo CSR Chip Products",
+      "isAudioDevice": true,
+      "tapProtocol": "HID",
+      "usbAudioInterfaceIndex": "0",
+      "usbTapInterfaceIndex": "2",
+      "usbInternalHub": "/1",
+      "usbToSerial": {
+        "registryKey": "hotplug_dev:05a7:40fc",
+        "registryValue": "hid_mode_switch"
+      },
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    },
+    {
+      "productName": "Forman Family",
+      "displayName": "USB HID No Audio for Bluetooth products",
+      "productClass": "Bluetooth_Headphones",
+      "isAudioDevice": true,
+      "tapProtocol": "HID",
+      "usbTapInterfaceIndex": "0",
+      "usbToSerial": [
+        {
+          "registryKey": "hotplug_dev:05a7:40fe",
+          "registryValue": "hid_mode_switch"
+        },
+        {
+          "registryKey": "hotplug_dev:05a7:40fa",
+          "registryValue": "hid_mode_switch"
+        }
+      ],
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    },
+    {
+      "productName": "Riviera Family",
+      "displayName": "Riviera Family",
+      "productClass": "Riviera Platform",
+      "isAudioDevice": false,
+      "tapProtocol": "HID",
+      "usbNetInterfaceIndex": "0",
+      "usbTapInterfaceIndex": "2",
+      "usbToSerial": {
+        "registryKey": "hotplug_dev:05a7:40fc",
+        "registryValue": "hid_mode_switch"
+      },
+      "commandLibrarySupport": "Riviera",
+      "transport": {
+        "baudRate": 115200,
+        "dataBits": "8",
+        "parity": "N",
+        "stopBits": "1",
+        "flowControl": "none",
+        "invertSignals": true,
+        "sendEOL": "CR",
+        "receiveEOL": "CR+LF"
+      },
+      "volumeTable": {
+        "xval1": 20,
+        "yval1": 50,
+        "xval2": 60,
+        "yval2": 70,
+        "xval3": 120,
+        "yval3": 90
+      }
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BrightSign Drop</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <main class="page">
+      <header class="hero">
+        <div class="brand">
+          <div class="logo">LOGO</div>
+        </div>
+      </header>
+
+      <section class="grid" aria-label="Available screens">
+        <article class="screen-card" data-screen="macys_cos_womens">
+          <div class="screen-header">
+            <div>
+              <h2>Women's Cosfrag</h2>
+              <p class="meta">34th Street</p>
+            </div>
+            <span class="pill status">Online</span>
+          </div>
+          <div class="snapshot womens">
+            <div class="snapshot-label">Now Playing</div>
+            <div class="snapshot-title">Jimmy Choo 30s</div>
+          </div>
+          <div class="screen-details">
+            <div>
+              <span class="label">Current</span>
+              <span class="value">Jimmy Choo 30s</span>
+            </div>
+            <div>
+              <span class="label">Next Start</span>
+              <span class="value">Mar 10 • 9:00 AM</span>
+            </div>
+          </div>
+          <div class="requirements">
+            <span class="label">Requirements</span>
+            <p>MP4 · 1280x1024 source</p>
+          </div>
+          <div class="actions">
+            <div class="actions-row">
+              <button class="primary upload-btn" data-screen="macys_cos_womens">
+                Upload
+              </button>
+              <button class="ghost">Create Upload Link</button>
+            </div>
+            <div class="actions-row">
+              <button class="ghost">View Calendar</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="screen-card" data-screen="macys_cos_mens">
+          <div class="screen-header">
+            <div>
+              <h2>Men's Cosfrag</h2>
+              <p class="meta">7th Avenue</p>
+            </div>
+            <span class="pill status">Online</span>
+          </div>
+          <div class="snapshot mens">
+            <div class="snapshot-label">Now Playing</div>
+            <div class="snapshot-title">Savage for Men 2026</div>
+          </div>
+          <div class="screen-details">
+            <div>
+              <span class="label">Current</span>
+              <span class="value">Savage for Men 2026</span>
+            </div>
+            <div>
+              <span class="label">Next Start</span>
+              <span class="value">Mar 12 • 11:00 AM</span>
+            </div>
+          </div>
+          <div class="requirements">
+            <span class="label">Requirements</span>
+            <p>MP4 · 1080x1920 source</p>
+          </div>
+          <div class="actions">
+            <div class="actions-row">
+              <button class="primary upload-btn" data-screen="macys_cos_mens">
+                Upload
+              </button>
+              <button class="ghost">Create Upload Link</button>
+            </div>
+            <div class="actions-row">
+              <button class="ghost">View Calendar</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="schedule-panel" aria-label="Upcoming schedules">
+        <div class="panel-header">
+          <h3>Schedule Queue</h3>
+          <p>Latest 50 uploads by start date.</p>
+        </div>
+        <div class="table">
+          <div class="table-row table-head">
+            <span>Screen</span>
+            <span>Video</span>
+            <span>Start</span>
+            <span>End</span>
+            <span>Status</span>
+          </div>
+          <div id="scheduleRows" class="table-body"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="modal" id="uploadModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <div>
+            <h3 id="modalTitle">Upload to Screen</h3>
+            <p id="modalSubtitle">Select a file and schedule dates.</p>
+          </div>
+          <button class="icon-btn" data-close="true">×</button>
+        </div>
+        <form id="uploadForm" class="form">
+          <input type="hidden" id="screen" name="screen" />
+          <div class="field">
+            <label for="name">Video Name</label>
+            <input id="name" name="name" type="text" placeholder="e.g. Jimmy Choo 30s" required />
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="startDate">Start Date</label>
+              <input id="startDate" name="startDate" type="date" required />
+            </div>
+            <div class="field">
+              <label for="endDate">End Date (optional)</label>
+              <input id="endDate" name="endDate" type="date" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="description">Description (optional)</label>
+            <textarea id="description" name="description" rows="3" placeholder="Notes, special instructions, or location details."></textarea>
+          </div>
+          <div class="upload">
+            <input id="file" name="file" type="file" accept="video/*" required />
+            <div class="upload-card">
+              <div class="upload-title">Drop your video here</div>
+              <div class="upload-sub">MP4 recommended. We validate resolution on upload.</div>
+              <div class="file-name" id="fileName">No file selected</div>
+            </div>
+          </div>
+          <button type="submit" class="primary">Upload &amp; Publish</button>
+        </form>
+        <div class="status" id="status"></div>
+      </div>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

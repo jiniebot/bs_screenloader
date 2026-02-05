@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "client": {
+      "lastModifiedTime": "2026-01-21T04:53:55.975",
+      "enableSerialDebugging": false,
+      "enableSystemLogDebugging": false,
+      "publishedDataSizeLimitMB": 0,
+      "dynamicDataSizeLimitMB": 0,
+      "htmlDataSizeLimitMB": 0,
+      "htmlLocalStorageSizeLimitMB": 0,
+      "htmlIndexedDBSizeLimitMB": 0,
+      "publishedDataSizeLimitPercentage": 0,
+      "dynamicDataSizeLimitPercentage": 0,
+      "htmlDataSizeLimitPercentage": 0,
+      "htmlLocalStorageSizeLimitPercentage": 0,
+      "htmlIndexedDBSizeLimitPercentage": 0,
+      "limitStorageSpace": false,
+      "playbackLoggingEnabled": false,
+      "eventLoggingEnabled": false,
+      "diagnosticLoggingEnabled": false,
+      "stateLoggingEnabled": false,
+      "variableLoggingEnabled": false,
+      "uploadLogFilesAtBoot": false,
+      "uploadLogFilesAtSpecificTime": false,
+      "uploadLogFilesTime": 0,
+      "base": "http://www.joebiber.com/videos/macys_cos_womens",
+      "next": "/current-sync.json",
+      "event": "EVENT",
+      "error": "ERROR",
+      "deviceerror": "DEVICEERROR",
+      "uploadusage": "UPLOADUSAGE",
+      "getfile": "GETFILE",
+      "uploadLogs": "",
+      "uploadSnapshots": "",
+      "timeBetweenNetConnects": 300,
+      "contentDownloadsRestricted": false,
+      "contentDownloadRangeStart": 0,
+      "contentDownloadRangeLength": 0,
+      "deviceScreenShotsEnabled": false,
+      "deviceScreenShotsInterval": 900,
+      "deviceScreenShotsCountLimit": 5,
+      "deviceScreenShotsQuality": 50,
+      "deviceScreenShotsOrientation": "Landscape"
+    },
+    "server": {
+      "account": "ACCOUNT",
+      "user": "",
+      "password": "",
+      "enableBasicAuthentication": false,
+      "group": "GROUPNAME"
+    }
+  },
+  "files": {
+    "download": [
+      {
+        "name": "autoplay-macys_cos_womens.json",
+        "hash": {
+          "method": "SHA1",
+          "hex": "99eefa5d9bc0c8cef61a75ffa03b6fd80930ffb1"
+        },
+        "size": 19651,
+        "link": "http://www.joebiber.com/videos/macys_cos_womens/pool/b/1/sha1-99eefa5d9bc0c8cef61a75ffa03b6fd80930ffb1",
+        "headers": null,
+        "chargeable": false
+      },
+      {
+        "name": "macys_cos_womens.bml",
+        "hash": {
+          "method": "SHA1",
+          "hex": "e91a005157749bd00154278ff57e72a11bbf2d04"
+        },
+        "size": 22497,
+        "link": "http://www.joebiber.com/videos/macys_cos_womens/pool/0/4/sha1-e91a005157749bd00154278ff57e72a11bbf2d04",
+        "headers": null,
+        "chargeable": false
+      },
+      {
+        "name": "old_womens.mp4",
+        "hash": {
+          "method": "SHA1",
+          "hex": "4aa14d814f06b368c7aa6d83b6f39c82603b8782"
+        },
+        "size": 37239313,
+        "link": "http://www.joebiber.com/videos/macys_cos_womens/pool/8/2/sha1-4aa14d814f06b368c7aa6d83b6f39c82603b8782",
+        "headers": null,
+        "chargeable": false,
+        "probe": "2|TT=MP4|IX=Y|AP=2|AC=AAC|ACH=2|ASR=48000|AD=0000752a|VP=1|VC=H264|W=1920|H=1080|VD=0000750b|CD=0|VFR=29.970297|D=0000752a|FT=00000000"
+      },
+      {
+        "name": "autoplugins.brs",
+        "hash": {
+          "method": "SHA1",
+          "hex": "4757dc2a65c88a30f08d9ae0d7722998f0510bb8"
+        },
+        "size": 142,
+        "link": "http://www.joebiber.com/videos/macys_cos_mens/pool/b/8/sha1-4757dc2a65c88a30f08d9ae0d7722998f0510bb8",
+        "headers": null,
+        "chargeable": false,
+        "group": "script"
+      },
+      {
+        "name": "autorun.brs",
+        "hash": {
+          "method": "SHA1",
+          "hex": "1a45655cea330191f6f8dfc6552228ba4781d748"
+        },
+        "size": 1181024,
+        "link": "http://www.joebiber.com/videos/macys_cos_mens/pool/4/8/sha1-1a45655cea330191f6f8dfc6552228ba4781d748",
+        "headers": null,
+        "chargeable": false,
+        "group": "script"
+      },
+      {
+        "name": "autoschedule.json",
+        "hash": {
+          "method": "SHA1",
+          "hex": "eb04312e819ad8f236a11790c7ab29c966c46820"
+        },
+        "size": 905,
+        "link": "http://www.joebiber.com/videos/macys_cos_womens/pool/2/0/sha1-eb04312e819ad8f236a11790c7ab29c966c46820",
+        "headers": null,
+        "chargeable": false
+      },
+      {
+        "name": "featureMinRevs.json",
+        "hash": {
+          "method": "SHA1",
+          "hex": "be206e2753e404e0135926e3f26fea9a8da705d2"
+        },
+        "size": 72,
+        "link": "http://www.joebiber.com/videos/macys_cos_mens/pool/d/2/sha1-be206e2753e404e0135926e3f26fea9a8da705d2",
+        "headers": null,
+        "chargeable": false
+      },
+      {
+        "name": "PartnerProducts.json",
+        "hash": {
+          "method": "SHA1",
+          "hex": "7f6f525d51ba1977356a37f7b9f097a52cf53f3a"
+        },
+        "size": 5473,
+        "link": "http://www.joebiber.com/videos/macys_cos_mens/pool/3/a/sha1-7f6f525d51ba1977356a37f7b9f097a52cf53f3a",
+        "headers": null,
+        "chargeable": false
+      },
+      {
+        "name": "Default_PresentationWebPage/_deviceWebPage.html",
+        "hash": {
+          "method": "SHA1",
+          "hex": "b6bec2ed0cd22a6d53cd97056d7d5f82705ffe9d"
+        },
+        "size": 24922,
+        "link": "http://www.joebiber.com/videos/macys_cos_mens/pool/9/d/sha1-b6bec2ed0cd22a6d53cd97056d7d5f82705ffe9d",
+        "headers": null,
+        "chargeable": false
+      }
+    ],
+    "ignore": [
+      {
+        "pattern": "*"
+      }
+    ],
+    "delete": [
+      {
+        "pattern": "*.brs"
+      },
+      {
+        "pattern": "*.rok"
+      },
+      {
+        "pattern": "*.bsfw"
+      }
+    ]
+  }
+}
