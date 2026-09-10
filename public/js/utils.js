@@ -1,7 +1,13 @@
 export const combineDateTime = (dateValue, timeValue) => {
   if (!dateValue) return "";
   const time = timeValue || "00:00";
-  return `${dateValue}T${time}`;
+  const [year, month, day] = dateValue.split("-").map(Number);
+  const [hour, minute] = time.split(":").map(Number);
+  // Build the Date from local components (browser's timezone) so the
+  // resulting ISO string is an unambiguous UTC instant, regardless of
+  // what timezone the server happens to run in.
+  const local = new Date(year, month - 1, day, hour, minute, 0, 0);
+  return local.toISOString();
 };
 
 export const splitDateTime = (value) => {
