@@ -9,6 +9,7 @@ const uploadJobSchema = new mongoose.Schema(
     processedPath: { type: String },
     outputDir: { type: String },
     ftpPath: { type: String },
+    r2Key: { type: String },
     status: {
       type: String,
       enum: ["pending", "processing", "completed", "failed"],

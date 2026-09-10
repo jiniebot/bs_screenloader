@@ -10,7 +10,31 @@ import {
 } from "./videoProcessor.js";
 import { generateBrightsignBundle } from "./brightsignGenerator.js";
 import { uploadToFtp } from "./ftpUploader.js";
+import { archiveRawSource, isR2Configured } from "./r2Storage.js";
 import PlaybackEvent from "../models/PlaybackEvent.js";
+
+async function archiveAndCleanup({ job, screenName, processedDir, bundleOutputRoot }) {
+  if (!isR2Configured()) {
+    console.warn("[uploadProcessor] R2 not configured — skipping archive/cleanup for job", job._id.toString());
+    return null;
+  }
+  const ext = path.extname(job.sourcePath) || ".mp4";
+  const key = `raw/${screenName}/${job._id.toString()}${ext}`;
+  let r2Key = null;
+  try {
+    await archiveRawSource({ localPath: job.sourcePath, key });
+    r2Key = key;
+  } catch (err) {
+    console.error("[uploadProcessor] Failed to archive raw source to R2, skipping local cleanup", err);
+    return null;
+  }
+  await Promise.all([
+    fs.rm(job.sourcePath, { force: true }),
+    fs.rm(processedDir, { recursive: true, force: true }),
+    fs.rm(bundleOutputRoot, { recursive: true, force: true }),
+  ]);
+  return r2Key;
+}
 
 export async function processUploadJob(
   jobId,
@@ -76,11 +100,19 @@ export async function processUploadJob(
     warnIfExists,
   });
 
+  const r2Key = await archiveAndCleanup({
+    job,
+    screenName,
+    processedDir,
+    bundleOutputRoot,
+  });
+
   await UploadJob.findByIdAndUpdate(jobId, {
     status: "completed",
     processedPath,
     outputDir: bundleResult.outputDir,
     ftpPath,
+    r2Key,
   });
   if (job.schedule) {
     await VideoSchedule.findByIdAndUpdate(job.schedule, {

@@ -52,6 +52,13 @@ const config = {
     timeoutMs: Number(process.env.FTP_TIMEOUT_MS || 120000),
     keepAliveMs: Number(process.env.FTP_KEEPALIVE_MS || 10000),
   },
+  r2: {
+    accountId: process.env.R2_ACCOUNT_ID || "",
+    accessKeyId: process.env.R2_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || "",
+    bucket: process.env.R2_BUCKET || "",
+    endpoint: process.env.R2_ENDPOINT || "",
+  },
   processing: {
     defaultCanvasWidth: Number(process.env.CANVAS_W || 1920),
     defaultCanvasHeight: Number(process.env.CANVAS_H || 1080),
