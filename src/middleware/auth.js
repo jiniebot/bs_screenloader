@@ -6,7 +6,7 @@ export async function authRequired(req, res, next) {
   try {
     const header = req.headers.authorization || "";
     const bearerToken = header.startsWith("Bearer ") ? header.slice(7) : null;
-    const token = req.cookies?.bs_token || bearerToken;
+    const token = req.cookies?.sc_token || bearerToken;
     if (!token) {
       return res.status(401).json({ error: "Missing auth token." });
     }

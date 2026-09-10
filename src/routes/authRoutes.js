@@ -8,7 +8,7 @@ import { authRequired, requireRole } from "../middleware/auth.js";
 
 const router = express.Router();
 
-const COOKIE_NAME = "bs_token";
+const COOKIE_NAME = "sc_token";
 
 function issueToken(user) {
   return jwt.sign(
