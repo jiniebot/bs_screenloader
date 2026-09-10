@@ -102,8 +102,11 @@ router.patch("/schedules/:id", authRequired, async (req, res, next) => {
     if (!schedule.screen || !canAccessScreen(req.user, schedule.screen)) {
       return res.status(403).json({ error: "Forbidden." });
     }
-    if (schedule.status !== "scheduled") {
-      return res.status(400).json({ error: "Only scheduled items can be edited." });
+    // Editing start/end time is just a metadata change — the video file
+    // itself doesn't need to move, so this is allowed at any point in the
+    // schedule's life except once it's failed or canceled outright.
+    if (!["scheduled", "queued", "processing", "completed"].includes(schedule.status)) {
+      return res.status(400).json({ error: "This schedule can no longer be edited." });
     }
 
     const { startDate, endDate } = req.body;
@@ -114,6 +117,14 @@ router.patch("/schedules/:id", authRequired, async (req, res, next) => {
     }
     if (parsedEnd && Number.isNaN(parsedEnd.getTime())) {
       return res.status(400).json({ error: "Invalid end date." });
+    }
+
+    // Moving the start time is only safe if it isn't jumping into the past —
+    // leaving it unchanged (even if that original time has already passed)
+    // is fine, since that's not actually rescheduling anything.
+    const startUnchanged = parsedStart.getTime() === schedule.startDate.getTime();
+    if (!startUnchanged && parsedStart < new Date()) {
+      return res.status(400).json({ error: "Start date cannot be moved into the past." });
     }
 
     schedule.startDate = parsedStart;

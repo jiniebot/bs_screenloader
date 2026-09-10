@@ -31,7 +31,7 @@ export const loadSchedules = async () => {
   schedules.forEach((schedule) => {
     const row = document.createElement("div");
     row.className = "table-row";
-    const canEdit = schedule.status === "scheduled";
+    const canEdit = ["scheduled", "queued", "processing", "completed"].includes(schedule.status);
     row.innerHTML = `
       <span data-label="Screen">${schedule.screen}</span>
       <span data-label="Video">${schedule.name}</span>
