@@ -16,6 +16,7 @@ export const loadCalendar = async () => {
   } catch {
     state.occurrences = [];
   }
+  const previousSelection = calScreenFilter.value || "all";
   const screenOptions = [
     { id: "all", name: "All screens" },
     ...state.screens.map((s) => ({ id: s.id, name: s.name })),
@@ -27,6 +28,9 @@ export const loadCalendar = async () => {
     option.textContent = opt.name;
     calScreenFilter.appendChild(option);
   });
+  if (screenOptions.some((opt) => opt.id === previousSelection)) {
+    calScreenFilter.value = previousSelection;
+  }
   if (!daypilotRoot) return;
   if (!window.DayPilot) return;
 
@@ -38,8 +42,9 @@ export const loadCalendar = async () => {
       eventResizeHandling: "Disabled",
       eventDeleteHandling: "Disabled",
       onEventClick: (args) => {
-        if (args?.e?.data) {
-          openScheduleModal(args.e.data, "timeslot");
+        const data = args?.e?.data;
+        if (data) {
+          openScheduleModal(data, data.__eventType === "schedule" ? "schedule" : "timeslot");
         }
       },
     });
@@ -47,7 +52,7 @@ export const loadCalendar = async () => {
   }
 
   const filterScreenId = calScreenFilter.value || "all";
-  const events = state.occurrences
+  const timeSlotEvents = state.occurrences
     .filter((occ) => filterScreenId === "all" || occ.screenId === filterScreenId)
     .map((occ) => ({
       id: occ.id,
@@ -59,6 +64,29 @@ export const loadCalendar = async () => {
       fontColor: "#0b0d12",
       data: occ,
     }));
+
+  // One-off schedules from upload links / direct upload — separate from
+  // recurring TimeSlots, but should still show up on the calendar.
+  const scheduleEvents = (state.schedules || [])
+    .filter((s) => ["scheduled", "queued", "processing", "completed"].includes(s.status))
+    .filter((s) => filterScreenId === "all" || s.screenId === filterScreenId)
+    .filter((s) => {
+      const start = new Date(s.startDate);
+      const end = s.endDate ? new Date(s.endDate) : start;
+      return start <= range.end && end >= range.start;
+    })
+    .map((s) => ({
+      id: `schedule-${s.id}`,
+      text: `${s.name || "Untitled"} · ${s.status}`,
+      start: s.startDate,
+      end: s.endDate || s.startDate,
+      backColor: getScreenColor(s.screenId),
+      barColor: getScreenColor(s.screenId),
+      fontColor: "#0b0d12",
+      data: { ...s, __eventType: "schedule" },
+    }));
+
+  const events = [...timeSlotEvents, ...scheduleEvents];
 
   state.daypilotCalendar.events.list = events;
   state.daypilotCalendar.update();
