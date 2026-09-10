@@ -443,7 +443,10 @@ textarea:focus {
 }
 
 .modal.active {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
 }
 
 .modal-backdrop {
@@ -455,11 +458,10 @@ textarea:focus {
 
 .modal-card {
   position: relative;
-  width: calc(100% - 32px);
+  width: 100%;
   max-width: 560px;
-  max-height: 84vh;
+  max-height: 100%;
   overflow-y: auto;
-  margin: 8vh auto;
   background: var(--panel);
   border-radius: 12px;
   padding: 24px;
@@ -609,7 +611,5 @@ textarea:focus {
 
   .modal-card {
     padding: 16px;
-    margin: 4vh auto;
-    max-height: 92vh;
   }
 }
