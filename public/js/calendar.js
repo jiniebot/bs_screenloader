@@ -1,6 +1,6 @@
 import { apiFetch } from "./api.js";
 import { state } from "./state.js";
-import { getMonthRange, getScreenColor } from "./utils.js";
+import { getMonthRange, colorForIndex } from "./utils.js";
 import { openScheduleModal } from "./schedules.js";
 
 const calScreenFilter = document.getElementById("calScreenFilter");
@@ -23,7 +23,6 @@ export const renderCalendarEvents = () => {
       text: `${occ.name}${occ.assigned ? " · assigned" : ""}`,
       start: occ.start,
       end: occ.end,
-      backColor: getScreenColor(occ.screenId),
       fontColor: "#0b0d12",
       data: occ,
     }));
@@ -43,7 +42,6 @@ export const renderCalendarEvents = () => {
       text: `${s.name || "Untitled"} · ${s.status}`,
       start: s.startDate,
       end: s.endDate || s.startDate,
-      backColor: getScreenColor(s.screenId),
       fontColor: "#0b0d12",
       data: { ...s, __eventType: "schedule" },
     }));
@@ -65,13 +63,24 @@ export const renderCalendarEvents = () => {
       text: `${l.name || "Untitled"} · pending upload`,
       start: l.startDate,
       end: l.endDate || l.startDate,
-      backColor: getScreenColor(l.screenId),
       fontColor: "#0b0d12",
       cssClass: "cal-event-pending",
       data: { ...l, __eventType: "link" },
     }));
 
-  state.daypilotCalendar.events.list = [...timeSlotEvents, ...scheduleEvents, ...linkEvents];
+  const events = [...timeSlotEvents, ...scheduleEvents, ...linkEvents];
+
+  // Assign each distinct event its own well-separated color (golden-angle
+  // hue spacing) rather than hashing an id, which can occasionally put two
+  // unrelated events right next to each other on the color wheel. Sorted
+  // by id first so a given set of visible events gets a stable coloring
+  // across re-renders instead of shuffling with array order.
+  const sortedIds = [...events].map((e) => e.id).sort();
+  events.forEach((e) => {
+    e.backColor = colorForIndex(sortedIds.indexOf(e.id));
+  });
+
+  state.daypilotCalendar.events.list = events;
   state.daypilotCalendar.update();
 };
 

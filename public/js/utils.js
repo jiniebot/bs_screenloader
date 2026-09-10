@@ -49,15 +49,10 @@ export const formatDateTime = (value) => {
   return date.toLocaleString();
 };
 
-const screenHue = (screenId) => {
-  const str = screenId || "default";
-  let hash = 0;
-  for (let i = 0; i < str.length; i += 1) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash) % 360;
-};
+const GOLDEN_ANGLE = 137.508;
 
-// Light/faded fill for calendar event backgrounds.
-export const getScreenColor = (screenId) => `hsl(${screenHue(screenId)} 55% 88%)`;
+// Light/faded fill for calendar event backgrounds. Spacing hues by the
+// golden angle guarantees any two distinct indices land far apart on the
+// color wheel — unlike hashing an id, which can occasionally put two
+// unrelated events right next to each other by chance.
+export const colorForIndex = (index) => `hsl(${(index * GOLDEN_ANGLE) % 360} 55% 88%)`;
