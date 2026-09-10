@@ -2,13 +2,18 @@ import mongoose from "mongoose";
 
 const timeSlotSchema = new mongoose.Schema(
   {
-    screen: { type: mongoose.Schema.Types.ObjectId, ref: "Screen" },
-    label: { type: String, required: true },
-    startsAt: { type: Date, required: true },
-    endsAt: { type: Date, required: true },
-    status: { type: String, default: "open" },
+    screen: { type: mongoose.Schema.Types.ObjectId, ref: "Screen", required: true },
+    name: { type: String, required: true },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    rrule: { type: String, required: true },
+    exceptions: [{ type: Date }],
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    status: { type: String, default: "active" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("TimeSlot", timeSlotSchema);

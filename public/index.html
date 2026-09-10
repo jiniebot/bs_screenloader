@@ -3,161 +3,613 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>BrightSign Drop</title>
+    <title>BrightSign Control</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="noise"></div>
     <main class="page">
-      <header class="hero">
+      <header class="topbar">
         <div class="brand">
-          <div class="logo">LOGO</div>
+          <div class="logo">BS</div>
+          <div>
+            <div class="brand-title">BrightSign Control</div>
+            <div class="brand-sub">Screens · Upload Links · Scheduling</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span id="userBadge" class="badge"></span>
+          <button id="logoutBtn" class="ghost">Log out</button>
         </div>
       </header>
 
-      <section class="grid" aria-label="Available screens">
-        <article class="screen-card" data-screen="macys_cos_womens">
-          <div class="screen-header">
-            <div>
-              <h2>Women's Cosfrag</h2>
-              <p class="meta">34th Street</p>
-            </div>
-            <span class="pill status">Online</span>
-          </div>
-          <div class="snapshot womens">
-            <div class="snapshot-label">Now Playing</div>
-            <div class="snapshot-title">Jimmy Choo 30s</div>
-          </div>
-          <div class="screen-details">
-            <div>
-              <span class="label">Current</span>
-              <span class="value">Jimmy Choo 30s</span>
-            </div>
-            <div>
-              <span class="label">Next Start</span>
-              <span class="value">Mar 10 • 9:00 AM</span>
-            </div>
-          </div>
-          <div class="requirements">
-            <span class="label">Requirements</span>
-            <p>MP4 · 1280x1024 source</p>
-          </div>
-          <div class="actions">
-            <div class="actions-row">
-              <button class="primary upload-btn" data-screen="macys_cos_womens">
-                Upload
-              </button>
-              <button class="ghost">Create Upload Link</button>
-            </div>
-            <div class="actions-row">
-              <button class="ghost">View Calendar</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="screen-card" data-screen="macys_cos_mens">
-          <div class="screen-header">
-            <div>
-              <h2>Men's Cosfrag</h2>
-              <p class="meta">7th Avenue</p>
-            </div>
-            <span class="pill status">Online</span>
-          </div>
-          <div class="snapshot mens">
-            <div class="snapshot-label">Now Playing</div>
-            <div class="snapshot-title">Savage for Men 2026</div>
-          </div>
-          <div class="screen-details">
-            <div>
-              <span class="label">Current</span>
-              <span class="value">Savage for Men 2026</span>
-            </div>
-            <div>
-              <span class="label">Next Start</span>
-              <span class="value">Mar 12 • 11:00 AM</span>
-            </div>
-          </div>
-          <div class="requirements">
-            <span class="label">Requirements</span>
-            <p>MP4 · 1080x1920 source</p>
-          </div>
-          <div class="actions">
-            <div class="actions-row">
-              <button class="primary upload-btn" data-screen="macys_cos_mens">
-                Upload
-              </button>
-              <button class="ghost">Create Upload Link</button>
-            </div>
-            <div class="actions-row">
-              <button class="ghost">View Calendar</button>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="schedule-panel" aria-label="Upcoming schedules">
+      <section id="authView" class="panel auth-panel">
         <div class="panel-header">
-          <h3>Schedule Queue</h3>
-          <p>Latest 50 uploads by start date.</p>
+          <h2>Sign in</h2>
+          <p>Access your screens and create upload links.</p>
         </div>
-        <div class="table">
-          <div class="table-row table-head">
-            <span>Screen</span>
-            <span>Video</span>
-            <span>Start</span>
-            <span>End</span>
-            <span>Status</span>
+        <form id="loginForm" class="form">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required />
           </div>
-          <div id="scheduleRows" class="table-body"></div>
-        </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required />
+          </div>
+          <button type="submit" class="primary">Sign in</button>
+          <div id="loginStatus" class="status"></div>
+        </form>
+
+        <div class="divider"></div>
+
+        <form id="bootstrapForm" class="form">
+          <h3>First-time setup</h3>
+          <p>Create the first admin account.</p>
+          <div class="field">
+            <label for="bootName">Name</label>
+            <input id="bootName" name="name" type="text" />
+          </div>
+          <div class="field">
+            <label for="bootEmail">Email</label>
+            <input id="bootEmail" name="email" type="email" />
+          </div>
+          <div class="field">
+            <label for="bootPassword">Password</label>
+            <input id="bootPassword" name="password" type="password" />
+          </div>
+          <button type="submit" class="ghost">Create admin</button>
+          <div id="bootstrapStatus" class="status"></div>
+        </form>
       </section>
 
+      <section id="appView" class="stack" hidden>
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Screens</h2>
+            <p>View screens you can manage.</p>
+          </div>
+          <div id="screensGrid" class="grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Create Upload Link</h2>
+            <p>Schedule when the FTP upload should happen.</p>
+          </div>
+          <form id="linkForm" class="form">
+            <div class="row">
+              <div class="field">
+                <label for="linkScreen">Screen</label>
+                <select id="linkScreen" name="screenId" required></select>
+              </div>
+              <div class="field">
+                <label for="linkName">Video Name</label>
+                <input
+                  id="linkName"
+                  name="name"
+                  type="text"
+                  placeholder="e.g. Spring Launch 30s"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="linkStartDate">Start date</label>
+                <input id="linkStartDate" name="startDate" type="date" required />
+                <label for="linkStartTime">Start time</label>
+                <input
+                  id="linkStartTime"
+                  name="startTime"
+                  type="time"
+                  value="00:00"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="linkEndDate">End date (optional)</label>
+                <input id="linkEndDate" name="endDate" type="date" />
+                <label for="linkEndTime">End time (optional)</label>
+                <input id="linkEndTime" name="endTime" type="time" value="00:00" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="linkMin">Min duration (seconds)</label>
+                <input id="linkMin" name="durationMinSec" type="number" min="1" />
+              </div>
+              <div class="field">
+                <label for="linkMax">Max duration (seconds)</label>
+                <input id="linkMax" name="durationMaxSec" type="number" min="1" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="linkDescription">Description (optional)</label>
+              <textarea id="linkDescription" name="description" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label for="linkExpires">Link expiry (optional)</label>
+              <input id="linkExpires" name="expiresAt" type="datetime-local" />
+            </div>
+            <button type="submit" class="primary">Create link</button>
+            <div id="linkStatus" class="status"></div>
+          </form>
+          <div class="divider"></div>
+          <div class="link-list">
+            <h3>Recent links</h3>
+            <div id="linksList"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Direct Upload</h2>
+            <p>Upload a file yourself without sharing a link.</p>
+          </div>
+          <form id="directUploadForm" class="form">
+            <div class="row">
+              <div class="field">
+                <label for="directScreen">Screen</label>
+                <select id="directScreen" name="screenId" required></select>
+              </div>
+              <div class="field">
+                <label for="directName">Video Name</label>
+                <input id="directName" name="name" type="text" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="directStartDate">Start date</label>
+                <input id="directStartDate" name="startDate" type="date" required />
+                <label for="directStartTime">Start time</label>
+                <input
+                  id="directStartTime"
+                  name="startTime"
+                  type="time"
+                  value="00:00"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="directEndDate">End date (optional)</label>
+                <input id="directEndDate" name="endDate" type="date" />
+                <label for="directEndTime">End time (optional)</label>
+                <input id="directEndTime" name="endTime" type="time" value="00:00" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="directDescription">Description (optional)</label>
+              <textarea id="directDescription" name="description" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label for="directFile">Video file</label>
+              <input id="directFile" name="file" type="file" accept="video/*" required />
+            </div>
+            <div class="progress">
+              <div id="directProgress" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <button type="submit" class="primary">Upload</button>
+            <div id="directStatus" class="status"></div>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Schedule Queue</h2>
+            <p>Latest scheduled uploads.</p>
+          </div>
+          <div class="table">
+            <div class="table-row table-head">
+              <span>Screen</span>
+              <span>Video</span>
+              <span>Start</span>
+              <span>End</span>
+              <span>Status</span>
+              <span>Actions</span>
+            </div>
+            <div id="scheduleRows" class="table-body"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Library</h2>
+            <p>Past uploads and playback history.</p>
+          </div>
+          <div id="historyList" class="list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Calendar</h2>
+            <p>Visual schedule by screen.</p>
+          </div>
+          <div class="calendar-controls">
+            <select id="calScreenFilter"></select>
+          </div>
+          <div id="daypilotCalendar" class="daypilot-root"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Time Slots</h2>
+            <p>Create recurring slots for screens.</p>
+          </div>
+          <form id="timeSlotForm" class="form">
+            <div class="row">
+              <div class="field">
+                <label for="slotScreen">Screen</label>
+                <select id="slotScreen" name="screenId" required></select>
+              </div>
+              <div class="field">
+                <label for="slotName">Slot Name</label>
+                <input id="slotName" name="name" type="text" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="slotStartDate">Start date</label>
+                <input id="slotStartDate" name="startDate" type="date" required />
+                <label for="slotStartTime">Start time</label>
+                <input
+                  id="slotStartTime"
+                  name="startTime"
+                  type="time"
+                  value="00:00"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="slotEndDate">End date (optional)</label>
+                <input id="slotEndDate" name="endDate" type="date" />
+                <label for="slotEndTime">End time</label>
+                <input
+                  id="slotEndTime"
+                  name="endTime"
+                  type="time"
+                  value="00:00"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="slotFrequency">Frequency</label>
+                <select id="slotFrequency" name="frequency">
+                  <option value="daily">Daily</option>
+                  <option value="weekly" selected>Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="slotInterval">Interval</label>
+                <input
+                  id="slotInterval"
+                  name="interval"
+                  type="number"
+                  min="1"
+                  value="1"
+                />
+              </div>
+              <div class="field">
+                <label for="slotUntil">Until (optional)</label>
+                <input id="slotUntil" name="until" type="date" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Days of week (weekly)</label>
+              <div class="row">
+                <label><input type="checkbox" name="byWeekday" value="0" /> Sun</label>
+                <label><input type="checkbox" name="byWeekday" value="1" /> Mon</label>
+                <label><input type="checkbox" name="byWeekday" value="2" /> Tue</label>
+                <label><input type="checkbox" name="byWeekday" value="3" /> Wed</label>
+                <label><input type="checkbox" name="byWeekday" value="4" /> Thu</label>
+                <label><input type="checkbox" name="byWeekday" value="5" /> Fri</label>
+                <label><input type="checkbox" name="byWeekday" value="6" /> Sat</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="slotExceptions">Exceptions (comma-separated dates)</label>
+              <input
+                id="slotExceptions"
+                name="exceptions"
+                type="text"
+                placeholder="2026-02-10, 2026-02-17"
+              />
+            </div>
+            <button type="submit" class="primary">Create slot</button>
+            <div id="slotStatus" class="status"></div>
+          </form>
+          <div class="list" id="slotList"></div>
+        </section>
+
+        <section id="adminPanel" class="panel" hidden>
+          <div class="panel-header">
+            <h2>Admin</h2>
+            <p>Manage groups, screens, and users.</p>
+          </div>
+
+          <div class="admin-grid">
+            <div>
+              <h3>Create Group</h3>
+              <form id="groupForm" class="form">
+                <div class="field">
+                  <label for="groupName">Name</label>
+                  <input id="groupName" name="name" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="groupDescription">Description</label>
+                  <textarea id="groupDescription" name="description" rows="2"></textarea>
+                </div>
+                <button type="submit" class="ghost">Create group</button>
+                <div id="groupStatus" class="status"></div>
+              </form>
+              <div class="list" id="groupList"></div>
+            </div>
+
+            <div>
+              <h3>Assign Screens</h3>
+              <p class="muted">Update group assignments for existing screens.</p>
+              <div id="screenAssignList" class="list"></div>
+            </div>
+
+            <div>
+              <h3>Create Screen</h3>
+              <form id="screenForm" class="form">
+                <div class="field">
+                  <label for="screenName">Name</label>
+                  <input id="screenName" name="name" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="screenCompany">Company</label>
+                  <input id="screenCompany" name="companyName" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="screenOwner">Owner</label>
+                  <input id="screenOwner" name="owner" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="screenTemplate">Template Dir</label>
+                  <input id="screenTemplate" name="templateDir" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="screenDest">Destination Folder</label>
+                  <input id="screenDest" name="destinationFolder" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="screenBase">Base URL</label>
+                  <input id="screenBase" name="baseUrl" type="url" required />
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="screenPrereqW">Prereq Width</label>
+                    <input id="screenPrereqW" name="prereqWidth" type="number" required />
+                  </div>
+                  <div class="field">
+                    <label for="screenPrereqH">Prereq Height</label>
+                    <input
+                      id="screenPrereqH"
+                      name="prereqHeight"
+                      type="number"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="screenCanvasW">Canvas Width</label>
+                    <input id="screenCanvasW" name="canvasWidth" type="number" required />
+                  </div>
+                  <div class="field">
+                    <label for="screenCanvasH">Canvas Height</label>
+                    <input
+                      id="screenCanvasH"
+                      name="canvasHeight"
+                      type="number"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="screenRotation">Rotation</label>
+                    <input id="screenRotation" name="rotation" type="number" value="0" />
+                  </div>
+                  <div class="field">
+                    <label for="screenScale">Scale</label>
+                    <input
+                      id="screenScale"
+                      name="scale"
+                      type="number"
+                      value="1"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="screenMin">Min duration (seconds)</label>
+                    <input id="screenMin" name="durationMinSec" type="number" min="1" />
+                  </div>
+                  <div class="field">
+                    <label for="screenMax">Max duration (seconds)</label>
+                    <input id="screenMax" name="durationMaxSec" type="number" min="1" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="screenOffsetX">Offset X</label>
+                    <input id="screenOffsetX" name="offsetX" type="number" value="0" />
+                  </div>
+                  <div class="field">
+                    <label for="screenOffsetY">Offset Y</label>
+                    <input id="screenOffsetY" name="offsetY" type="number" value="0" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="screenGroup">Group</label>
+                  <select id="screenGroup" name="groupId"></select>
+                </div>
+                <button type="submit" class="ghost">Create screen</button>
+                <div id="screenStatus" class="status"></div>
+              </form>
+            </div>
+
+            <div>
+              <h3>Edit Screen</h3>
+              <form id="screenEditForm" class="form">
+                <div class="field">
+                  <label for="editScreenSelect">Screen</label>
+                  <select id="editScreenSelect" name="screenId"></select>
+                </div>
+                <div class="field">
+                  <label for="editGroup">Group</label>
+                  <select id="editGroup" name="groupId"></select>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="editPrereqW">Prereq Width</label>
+                    <input id="editPrereqW" name="prereqWidth" type="number" />
+                  </div>
+                  <div class="field">
+                    <label for="editPrereqH">Prereq Height</label>
+                    <input id="editPrereqH" name="prereqHeight" type="number" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="editCanvasW">Canvas Width</label>
+                    <input id="editCanvasW" name="canvasWidth" type="number" />
+                  </div>
+                  <div class="field">
+                    <label for="editCanvasH">Canvas Height</label>
+                    <input id="editCanvasH" name="canvasHeight" type="number" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="editRotation">Rotation</label>
+                    <input id="editRotation" name="rotation" type="number" />
+                  </div>
+                  <div class="field">
+                    <label for="editScale">Scale</label>
+                    <input id="editScale" name="scale" type="number" step="0.01" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="editMin">Min duration (seconds)</label>
+                    <input id="editMin" name="durationMinSec" type="number" min="1" />
+                  </div>
+                  <div class="field">
+                    <label for="editMax">Max duration (seconds)</label>
+                    <input id="editMax" name="durationMaxSec" type="number" min="1" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="editOffsetX">Offset X</label>
+                    <input id="editOffsetX" name="offsetX" type="number" />
+                  </div>
+                  <div class="field">
+                    <label for="editOffsetY">Offset Y</label>
+                    <input id="editOffsetY" name="offsetY" type="number" />
+                  </div>
+                </div>
+                <button type="submit" class="ghost">Save changes</button>
+                <div id="screenEditStatus" class="status"></div>
+              </form>
+            </div>
+
+            <div>
+              <h3>Create User</h3>
+              <form id="userForm" class="form">
+                <div class="field">
+                  <label for="userName">Name</label>
+                  <input id="userName" name="name" type="text" required />
+                </div>
+                <div class="field">
+                  <label for="userEmail">Email</label>
+                  <input id="userEmail" name="email" type="email" required />
+                </div>
+                <div class="field">
+                  <label for="userPassword">Password</label>
+                  <input id="userPassword" name="password" type="password" required />
+                </div>
+                <div class="field">
+                  <label for="userRole">Role</label>
+                  <select id="userRole" name="role">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="userGroups">Groups</label>
+                  <select id="userGroups" name="groupIds" multiple></select>
+                </div>
+                <button type="submit" class="ghost">Create user</button>
+                <div id="userStatus" class="status"></div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </section>
     </main>
 
-    <div class="modal" id="uploadModal" aria-hidden="true">
-      <div class="modal-backdrop" data-close="true"></div>
-      <div class="modal-card" role="dialog" aria-modal="true">
+    <div class="modal" id="scheduleModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="schedule"></div>
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="scheduleModalHeading"
+      >
         <div class="modal-header">
           <div>
-            <h3 id="modalTitle">Upload to Screen</h3>
-            <p id="modalSubtitle">Select a file and schedule dates.</p>
+            <h3 id="scheduleModalHeading">Edit Schedule</h3>
+            <p id="scheduleModalTitle">Update timing or cancel.</p>
           </div>
-          <button class="icon-btn" data-close="true">×</button>
+          <button class="icon-btn" data-close="schedule" aria-label="Close dialog">
+            ×
+          </button>
         </div>
-        <form id="uploadForm" class="form">
-          <input type="hidden" id="screen" name="screen" />
-          <div class="field">
-            <label for="name">Video Name</label>
-            <input id="name" name="name" type="text" placeholder="e.g. Jimmy Choo 30s" required />
-          </div>
+        <form id="scheduleForm" class="form">
+          <input type="hidden" id="scheduleId" name="scheduleId" />
           <div class="row">
             <div class="field">
-              <label for="startDate">Start Date</label>
-              <input id="startDate" name="startDate" type="date" required />
+              <label for="scheduleStartDate">Start date</label>
+              <input id="scheduleStartDate" name="startDate" type="date" required />
+              <label for="scheduleStartTime">Start time</label>
+              <input
+                id="scheduleStartTime"
+                name="startTime"
+                type="time"
+                value="00:00"
+                required
+              />
             </div>
             <div class="field">
-              <label for="endDate">End Date (optional)</label>
-              <input id="endDate" name="endDate" type="date" />
+              <label for="scheduleEndDate">End date (optional)</label>
+              <input id="scheduleEndDate" name="endDate" type="date" />
+              <label for="scheduleEndTime">End time (optional)</label>
+              <input id="scheduleEndTime" name="endTime" type="time" value="00:00" />
             </div>
           </div>
-          <div class="field">
-            <label for="description">Description (optional)</label>
-            <textarea id="description" name="description" rows="3" placeholder="Notes, special instructions, or location details."></textarea>
+          <div class="row">
+            <button type="submit" class="primary">Save changes</button>
+            <button type="button" class="ghost" id="scheduleLinkBtn">
+              Create Upload Link
+            </button>
+            <button type="button" class="ghost" id="scheduleCopyBtn">Copy Link</button>
+            <button type="button" class="ghost" id="scheduleDeleteBtn">Deschedule</button>
           </div>
-          <div class="upload">
-            <input id="file" name="file" type="file" accept="video/*" required />
-            <div class="upload-card">
-              <div class="upload-title">Drop your video here</div>
-              <div class="upload-sub">MP4 recommended. We validate resolution on upload.</div>
-              <div class="file-name" id="fileName">No file selected</div>
-            </div>
-          </div>
-          <button type="submit" class="primary">Upload &amp; Publish</button>
+          <div id="scheduleStatus" class="status"></div>
         </form>
-        <div class="status" id="status"></div>
       </div>
     </div>
 
-    <script src="/app.js"></script>
+    <script src="/vendor/daypilot-javascript.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
   </body>
 </html>

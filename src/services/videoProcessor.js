@@ -1,7 +1,6 @@
 import { spawn } from "child_process";
 import fs from "fs/promises";
 import path from "path";
-import config from "../config/index.js";
 
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -37,7 +36,11 @@ async function readProcessOutput(command, args) {
   });
 }
 
-export async function assertVideoResolution({ inputPath, requiredWidth, requiredHeight }) {
+export async function assertVideoResolution({
+  inputPath,
+  requiredWidth,
+  requiredHeight,
+}) {
   if (!requiredWidth || !requiredHeight) {
     return;
   }
@@ -57,13 +60,20 @@ export async function assertVideoResolution({ inputPath, requiredWidth, required
   const width = Number(widthRaw);
   const height = Number(heightRaw);
   if (width !== requiredWidth || height !== requiredHeight) {
-    throw new Error(
-      `Invalid resolution ${width}x${height}; expected ${requiredWidth}x${requiredHeight}`
+    const srcAspect = width / height;
+    const reqAspect = requiredWidth / requiredHeight;
+    if (Math.abs(srcAspect - reqAspect) > 0.01) {
+      throw new Error(
+        `Invalid resolution ${width}x${height}; expected ${requiredWidth}x${requiredHeight}`,
+      );
+    }
+    console.warn(
+      `[video] Source is ${width}x${height}; scaling to ${requiredWidth}x${requiredHeight}`,
     );
   }
 }
 
-async function readVideoDurationSeconds(inputPath) {
+export async function readVideoDurationSeconds(inputPath) {
   const args = [
     "-v",
     "error",
@@ -81,7 +91,13 @@ async function readVideoDurationSeconds(inputPath) {
   return duration;
 }
 
-export async function processScreenVideo({ inputPath, outputPath, transform }) {
+export async function processScreenVideo({
+  inputPath,
+  outputPath,
+  transform,
+  requiredInputWidth,
+  requiredInputHeight,
+}) {
   await ensureDir(path.dirname(outputPath));
 
   const canvasWidth = transform?.canvasWidth ?? 1920;
@@ -95,16 +111,20 @@ export async function processScreenVideo({ inputPath, outputPath, transform }) {
     rotation === -90
       ? "transpose=2"
       : rotation === 90
-      ? "transpose=1"
-      : rotation === 180 || rotation === -180
-      ? "transpose=2,transpose=2"
+        ? "transpose=1"
+        : rotation === 180 || rotation === -180
+          ? "transpose=2,transpose=2"
+          : "null";
+
+  const scaleFilter = scale !== 1 ? `scale=iw*${scale}:ih*${scale}` : "null";
+
+  const inputScaleFilter =
+    requiredInputWidth && requiredInputHeight
+      ? `scale=${requiredInputWidth}:${requiredInputHeight}`
       : "null";
 
-  const scaleFilter =
-    scale !== 1 ? `scale=iw*${scale}:ih*${scale}` : "null";
-
   const filter = [
-    `[0:v]${rotateFilter},${scaleFilter}[vid]`,
+    `[0:v]${inputScaleFilter},${rotateFilter},${scaleFilter}[vid]`,
     `color=size=${canvasWidth}x${canvasHeight}:c=black[base]`,
     `[base][vid]overlay=${offsetX}:${offsetY}:format=auto[comp]`,
   ].join(";");

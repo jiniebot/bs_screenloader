@@ -17,9 +17,18 @@ async function uploadDir(client, localDir, remoteDir) {
   }
 }
 
-export async function uploadToFtp({ localDir, remoteDir }) {
+export async function uploadToFtp({
+  localDir,
+  remoteDir,
+  remoteRoot,
+  ftpUser,
+  ftpPassword,
+  warnIfExists = false,
+}) {
   const client = new Client();
   client.ftp.verbose = false;
+  client.ftp.timeout = config.ftp.timeoutMs;
+  client.ftp.keepAlive = config.ftp.keepAliveMs;
   client.trackProgress((info) => {
     const name = info.name || "upload";
     const transferred = Math.round(info.bytes / (1024 * 1024));
@@ -35,18 +44,25 @@ export async function uploadToFtp({ localDir, remoteDir }) {
   try {
     await client.access({
       host: config.ftp.host,
-      user: config.ftp.user,
-      password: config.ftp.password,
+      user: ftpUser !== undefined ? ftpUser : config.ftp.user,
+      password: ftpPassword !== undefined ? ftpPassword : config.ftp.password,
       secure: config.ftp.secure,
     });
 
-    const root = config.ftp.remoteRoot || "/";
+    const root = remoteRoot !== undefined ? remoteRoot : config.ftp.remoteRoot || "/";
     const targetDir = path.posix.join(root, remoteDir);
+
+    let folderReplaced = false;
     try {
       await client.removeDir(targetDir);
-    } catch (err) {
+      folderReplaced = true;
+    } catch {
       // Ignore if it doesn't exist.
     }
+    if (folderReplaced && warnIfExists) {
+      console.warn(`\n[WARNING] Existing remote folder was replaced: ${targetDir}`);
+    }
+
     await uploadDir(client, localDir, targetDir);
     process.stdout.write("\rFTP upload complete.                    \n");
 

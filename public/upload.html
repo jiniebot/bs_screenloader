@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload Video</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <main class="page upload-page">
+      <section class="panel">
+        <div class="panel-header">
+          <h2 id="uploadTitle">Upload link</h2>
+          <p id="uploadSubtitle">Loading details…</p>
+        </div>
+        <form id="publicUploadForm" class="form">
+          <div class="field">
+            <label>Screen</label>
+            <div id="screenLabel" class="pill">—</div>
+          </div>
+          <div class="field">
+            <label>Scheduled start</label>
+            <div id="startLabel" class="pill">—</div>
+          </div>
+          <div class="field">
+            <label>Scheduled end</label>
+            <div id="endLabel" class="pill">—</div>
+          </div>
+          <div class="field">
+            <label>Requirements</label>
+            <div id="reqLabel" class="pill">—</div>
+          </div>
+          <div class="field">
+            <label>Duration</label>
+            <div id="durationLabel" class="pill">—</div>
+          </div>
+          <div class="field">
+            <label for="publicFile">Video file</label>
+            <input id="publicFile" name="file" type="file" accept="video/*" required />
+          </div>
+          <div class="progress">
+            <div id="publicProgress" class="progress-bar" style="width: 0%"></div>
+          </div>
+          <button type="submit" class="primary">Upload video</button>
+          <div id="publicStatus" class="status"></div>
+        </form>
+      </section>
+    </main>
+    <script src="/upload.js"></script>
+  </body>
+</html>

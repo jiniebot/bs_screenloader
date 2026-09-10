@@ -10,6 +10,29 @@ for (const key of required) {
   }
 }
 
+const DEV_JWT_SECRET = "dev-secret-change-me";
+const isProduction = process.env.NODE_ENV === "production";
+
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET === DEV_JWT_SECRET) {
+  if (isProduction) {
+    throw new Error(
+      "[config] JWT_SECRET must be set to a strong random value in production. " +
+        "Generate one with: openssl rand -hex 32",
+    );
+  }
+  console.warn(
+    "[config] JWT_SECRET is missing or using the insecure default — fine for local dev only.",
+  );
+}
+
+function parseDurationMs(value) {
+  const match = /^(\d+)\s*(s|m|h|d)$/.exec(String(value).trim());
+  if (!match) return 8 * 60 * 60 * 1000; // fall back to 8h
+  const amount = Number(match[1]);
+  const unitMs = { s: 1000, m: 60000, h: 3600000, d: 86400000 }[match[2]];
+  return amount * unitMs;
+}
+
 const config = {
   env: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || 3000),
@@ -20,10 +43,14 @@ const config = {
   baseUrl: process.env.BASE_URL || "http://localhost:3000",
   ftp: {
     host: process.env.FTP_HOST || "",
-    user: process.env.FTP_USER || "",
-    password: process.env.FTP_PASSWORD || "",
+    user: process.env.FTP_USER_DEV || process.env.FTP_USER || "",
+    password: process.env.FTP_PASSWORD_DEV || process.env.FTP_PASSWORD || "",
+    userProd: process.env.FTP_USER_PROD || "",
+    passwordProd: process.env.FTP_PASSWORD_PROD || "",
     secure: process.env.FTP_SECURE === "true",
     remoteRoot: process.env.FTP_REMOTE_ROOT || "/",
+    timeoutMs: Number(process.env.FTP_TIMEOUT_MS || 120000),
+    keepAliveMs: Number(process.env.FTP_KEEPALIVE_MS || 10000),
   },
   processing: {
     defaultCanvasWidth: Number(process.env.CANVAS_W || 1920),
@@ -35,13 +62,19 @@ const config = {
   },
   screenDefaults: {
     womensBaseUrl:
-      process.env.SCREEN_WOMENS_BASE ||
-      "http://www.joebiber.com/videos/macys_cos_womens",
+      process.env.SCREEN_WOMENS_BASE || "http://www.joebiber.com/videos/macys_cos_womens",
     mensBaseUrl:
-      process.env.SCREEN_MENS_BASE ||
-      "http://www.joebiber.com/videos/macys_cos_mens",
+      process.env.SCREEN_MENS_BASE || "http://www.joebiber.com/videos/macys_cos_mens",
   },
   jobPollMs: Number(process.env.JOB_POLL_MS || 5000),
+  jwtSecret: process.env.JWT_SECRET || "dev-secret-change-me",
+  jwtTtl: process.env.JWT_TTL || "8h",
+  jwtTtlMs: parseDurationMs(process.env.JWT_TTL || "8h"),
+  durationDefaults: {
+    minSec: Number(process.env.DURATION_MIN_SEC || 1),
+    maxSec: process.env.DURATION_MAX_SEC ? Number(process.env.DURATION_MAX_SEC) : null,
+  },
+  linkExpiryDays: Number(process.env.LINK_EXPIRY_DAYS || 7),
 };
 
 export default config;

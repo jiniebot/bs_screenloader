@@ -1,0 +1,10 @@
+node_modules
+outputs
+uploads
+tmp
+source
+source mens proj
+source womens proj
+public/vendor
+scripts/output
+package-lock.json

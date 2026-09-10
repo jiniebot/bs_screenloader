@@ -24,7 +24,7 @@ function usage() {
     "  node scripts/create-brightsign-project.js <video-file> <player-name> [--out <output-dir>] [--template <template-dir>] [--base <base-url>]",
     "",
     "Example:",
-    "  node scripts/create-brightsign-project.js /path/to/video.mp4 \"Store 12\" --out ./store12",
+    '  node scripts/create-brightsign-project.js /path/to/video.mp4 "Store 12" --out ./store12',
   ].join("\n");
 }
 
@@ -195,10 +195,7 @@ export async function createBrightsignProject({
     throw new Error(`Video path is not a file: ${videoPath}`);
   }
 
-  const templateRoot = await resolveTemplateRoot(
-    normalizedPlayerName,
-    templateDir
-  );
+  const templateRoot = await resolveTemplateRoot(normalizedPlayerName, templateDir);
   const outputDir = outDir
     ? path.resolve(outDir)
     : path.resolve(process.cwd(), normalizedPlayerName);
@@ -231,28 +228,23 @@ export async function createBrightsignProject({
     (entry) =>
       typeof entry.name === "string" &&
       entry.name.startsWith("autoplay-") &&
-      entry.name.endsWith(".json")
+      entry.name.endsWith(".json"),
   );
   const bmlEntry = downloads.find(
     (entry) =>
-      typeof entry.name === "string" &&
-      entry.name.toLowerCase().endsWith(".bml")
+      typeof entry.name === "string" && entry.name.toLowerCase().endsWith(".bml"),
   );
-  const autoscheduleEntry = downloads.find(
-    (entry) => entry.name === "autoschedule.json"
-  );
+  const autoscheduleEntry = downloads.find((entry) => entry.name === "autoschedule.json");
   const videoEntry =
     downloads.find((entry) => entry.probe) ||
     downloads.find(
       (entry) =>
         typeof entry.name === "string" &&
-        /\.(mp4|m4v|mov|mkv|avi|wmv)$/i.test(entry.name)
+        /\.(mp4|m4v|mov|mkv|avi|wmv)$/i.test(entry.name),
     );
 
   if (!autoplayEntry || !bmlEntry || !autoscheduleEntry || !videoEntry) {
-    throw new Error(
-      "Template is missing autoplay, BML, autoschedule, or video entries."
-    );
+    throw new Error("Template is missing autoplay, BML, autoschedule, or video entries.");
   }
 
   const oldProjectName = autoplayEntry.name
@@ -270,38 +262,33 @@ export async function createBrightsignProject({
 
   const autoplayPath = path.join(outputDir, poolPathForHash(oldAutoplayHash));
   const bmlPath = path.join(outputDir, poolPathForHash(oldBmlHash));
-  const autoschedulePath = path.join(
-    outputDir,
-    poolPathForHash(oldAutoscheduleHash)
-  );
+  const autoschedulePath = path.join(outputDir, poolPathForHash(oldAutoscheduleHash));
 
   const autoplayJson = JSON.parse(await fsp.readFile(autoplayPath, "utf8"));
   const bmlJson = JSON.parse(await fsp.readFile(bmlPath, "utf8"));
-  const autoscheduleJson = JSON.parse(
-    await fsp.readFile(autoschedulePath, "utf8")
-  );
+  const autoscheduleJson = JSON.parse(await fsp.readFile(autoschedulePath, "utf8"));
 
   const oldVideoPath =
     findString(
       autoplayJson,
       (val) =>
-        val.endsWith(oldVideoName) && !val.startsWith("file://") && val.includes("/")
+        val.endsWith(oldVideoName) && !val.startsWith("file://") && val.includes("/"),
     ) ||
     findString(
       bmlJson,
       (val) =>
-        val.endsWith(oldVideoName) && !val.startsWith("file://") && val.includes("/")
+        val.endsWith(oldVideoName) && !val.startsWith("file://") && val.includes("/"),
     ) ||
     "";
 
   const oldVideoFileUrl =
     findString(
       autoplayJson,
-      (val) => val.startsWith("file://") && val.endsWith(oldVideoName)
+      (val) => val.startsWith("file://") && val.endsWith(oldVideoName),
     ) ||
     findString(
       bmlJson,
-      (val) => val.startsWith("file://") && val.endsWith(oldVideoName)
+      (val) => val.startsWith("file://") && val.endsWith(oldVideoName),
     ) ||
     "";
 
@@ -321,15 +308,12 @@ export async function createBrightsignProject({
 
   const autoplayContent = Buffer.from(
     JSON.stringify(updatedAutoplay, null, 2) + "\n",
-    "utf8"
+    "utf8",
   );
-  const bmlContent = Buffer.from(
-    JSON.stringify(updatedBml, null, 2) + "\n",
-    "utf8"
-  );
+  const bmlContent = Buffer.from(JSON.stringify(updatedBml, null, 2) + "\n", "utf8");
   const autoscheduleContent = Buffer.from(
     JSON.stringify(updatedAutoschedule, null, 2) + "\n",
-    "utf8"
+    "utf8",
   );
 
   const autoplayHash = sha1Buffer(autoplayContent);
@@ -337,14 +321,15 @@ export async function createBrightsignProject({
   const autoscheduleHash = sha1Buffer(autoscheduleContent);
   const videoHash = await sha1File(videoPath);
 
-  const templateBaseUrl = currentSync.meta && currentSync.meta.client && currentSync.meta.client.base
-    ? currentSync.meta.client.base
-    : "";
+  const templateBaseUrl =
+    currentSync.meta && currentSync.meta.client && currentSync.meta.client.base
+      ? currentSync.meta.client.base
+      : "";
   const baseUrlUpdated = baseUrl
     ? baseUrl
     : templateBaseUrl
-    ? templateBaseUrl.replace(/\/[^/]+$/, `/${normalizedPlayerName}`)
-    : "";
+      ? templateBaseUrl.replace(/\/[^/]+$/, `/${normalizedPlayerName}`)
+      : "";
 
   updateDownloadEntry(autoplayEntry, {
     name: `autoplay-${newProjectName}.json`,
@@ -378,9 +363,7 @@ export async function createBrightsignProject({
     if (baseUrlUpdated) {
       currentSync.meta.client.base = baseUrlUpdated;
     }
-    currentSync.meta.client.lastModifiedTime = new Date()
-      .toISOString()
-      .replace("Z", "");
+    currentSync.meta.client.lastModifiedTime = new Date().toISOString().replace("Z", "");
   }
 
   await fsp.mkdir(path.join(outputDir, poolDirForHash(autoplayHash)), {
@@ -389,31 +372,27 @@ export async function createBrightsignProject({
   await fsp.mkdir(path.join(outputDir, poolDirForHash(bmlHash)), {
     recursive: true,
   });
-  await fsp.mkdir(
-    path.join(outputDir, poolDirForHash(autoscheduleHash)),
-    { recursive: true }
-  );
+  await fsp.mkdir(path.join(outputDir, poolDirForHash(autoscheduleHash)), {
+    recursive: true,
+  });
   await fsp.mkdir(path.join(outputDir, poolDirForHash(videoHash)), {
     recursive: true,
   });
 
   await fsp.writeFile(
     path.join(outputDir, poolPathForHash(autoplayHash)),
-    autoplayContent
+    autoplayContent,
   );
-  await fsp.writeFile(
-    path.join(outputDir, poolPathForHash(bmlHash)),
-    bmlContent
-  );
+  await fsp.writeFile(path.join(outputDir, poolPathForHash(bmlHash)), bmlContent);
   await fsp.writeFile(
     path.join(outputDir, poolPathForHash(autoscheduleHash)),
-    autoscheduleContent
+    autoscheduleContent,
   );
 
   await new Promise((resolve, reject) => {
     const readStream = fs.createReadStream(videoPath);
     const writeStream = fs.createWriteStream(
-      path.join(outputDir, poolPathForHash(videoHash))
+      path.join(outputDir, poolPathForHash(videoHash)),
     );
     readStream.on("error", reject);
     writeStream.on("error", reject);
@@ -437,10 +416,7 @@ export async function createBrightsignProject({
     }
   }
 
-  await fsp.writeFile(
-    currentSyncPath,
-    JSON.stringify(currentSync, null, 2) + "\n"
-  );
+  await fsp.writeFile(currentSyncPath, JSON.stringify(currentSync, null, 2) + "\n");
 
   return { outputDir, baseUrl: baseUrlUpdated };
 }

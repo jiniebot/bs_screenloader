@@ -17,7 +17,7 @@ const uploadJobSchema = new mongoose.Schema(
     error: { type: String },
     metadata: { type: Object, default: {} },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("UploadJob", uploadJobSchema);

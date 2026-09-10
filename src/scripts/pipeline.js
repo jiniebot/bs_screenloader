@@ -5,16 +5,22 @@ import Screen from "../models/Screen.js";
 import UploadLink from "../models/UploadLink.js";
 import UploadJob from "../models/UploadJob.js";
 import { processUploadJob } from "../services/uploadProcessor.js";
+import config from "../config/index.js";
+
+// FTP sub-account home must be set to public_html/videos in cPanel.
+// With that chroot, FTP "/" = "~/public_html/videos/", so remoteRoot "/" -> "~/public_html/videos/<folder>".
+const PROD_REMOTE_ROOT = "/";
 
 function usage() {
   return [
     "Usage:",
-    "  node src/scripts/pipelineTest.js --screen <screen-name> --file <video-path>",
+    "  node src/scripts/pipeline.js --screen <screen-name> --file <video-path>",
     "",
     "Example:",
-    "  node src/scripts/pipelineTest.js --screen macys_cos_womens --file ./uploads/test.mp4",
+    "  node src/scripts/pipeline.js --screen macys_cos_womens --file ./uploads/video.mp4",
     "",
-    "Uploads to: ~/public_html/videos_dev/<screen-destination-folder>  (FTP user chroot root is ~/public_html/videos_dev/)",
+    `Uploads to: ~${PROD_REMOTE_ROOT}/<screen-destination-folder>`,
+    "Any existing folder at that location will be replaced (you will be warned).",
   ].join("\n");
 }
 
@@ -57,11 +63,19 @@ async function run() {
     uploadLink: link._id,
     screen: screen._id,
     sourcePath,
-    metadata: { trigger: "cli" },
+    metadata: { trigger: "cli-prod" },
   });
 
   console.log(`Created UploadJob ${job._id} for screen ${screen.name}`);
-  const result = await processUploadJob(job._id, { remoteRoot: "/" });
+  console.log(`Target: ~${PROD_REMOTE_ROOT}/${screen.destinationFolder}`);
+
+  const result = await processUploadJob(job._id, {
+    remoteRoot: PROD_REMOTE_ROOT,
+    ftpUser: config.ftp.userProd,
+    ftpPassword: config.ftp.passwordProd,
+    warnIfExists: true,
+  });
+
   console.log("Pipeline complete:");
   console.log(JSON.stringify(result, null, 2));
   process.exit(0);

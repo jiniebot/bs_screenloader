@@ -5,6 +5,7 @@ const screenSchema = new mongoose.Schema(
     name: { type: String, required: true, unique: true },
     companyName: { type: String, required: true },
     owner: { type: String, required: true },
+    group: { type: mongoose.Schema.Types.ObjectId, ref: "Group" },
     templateDir: { type: String, required: true },
     destinationFolder: { type: String, required: true },
     baseUrl: { type: String, required: true },
@@ -20,8 +21,10 @@ const screenSchema = new mongoose.Schema(
       canvasWidth: { type: Number, default: 1920 },
       canvasHeight: { type: Number, default: 1080 },
     },
+    durationMinSec: { type: Number },
+    durationMaxSec: { type: Number },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Screen", screenSchema);

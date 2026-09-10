@@ -1,5 +1,6 @@
 import config from "../config/index.js";
 import { connectMongo } from "../db/mongo.js";
+import "../models/Screen.js";
 import UploadJob from "../models/UploadJob.js";
 import VideoSchedule from "../models/VideoSchedule.js";
 import { processUploadJob, failUploadJob } from "../services/uploadProcessor.js";
@@ -8,7 +9,7 @@ async function claimNextJob() {
   return UploadJob.findOneAndUpdate(
     { status: "pending" },
     { status: "processing" },
-    { sort: { createdAt: 1 }, new: true }
+    { sort: { createdAt: 1 }, new: true },
   ).populate("screen");
 }
 
@@ -16,7 +17,7 @@ async function claimDueSchedule() {
   return VideoSchedule.findOneAndUpdate(
     { status: "scheduled", startDate: { $lte: new Date() } },
     { status: "queued" },
-    { sort: { startDate: 1 }, new: true }
+    { sort: { startDate: 1 }, new: true },
   ).populate("screen");
 }
 

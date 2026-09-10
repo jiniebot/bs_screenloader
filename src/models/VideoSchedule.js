@@ -8,14 +8,19 @@ const videoScheduleSchema = new mongoose.Schema(
     startDate: { type: Date, required: true },
     endDate: { type: Date },
     sourcePath: { type: String, required: true },
+    videoAsset: { type: mongoose.Schema.Types.ObjectId, ref: "VideoAsset" },
+    timeSlot: { type: mongoose.Schema.Types.ObjectId, ref: "TimeSlot" },
+    assignment: { type: mongoose.Schema.Types.ObjectId, ref: "SlotAssignment" },
     status: {
       type: String,
-      enum: ["scheduled", "queued", "processing", "completed", "failed"],
+      enum: ["scheduled", "queued", "processing", "completed", "failed", "canceled"],
       default: "scheduled",
     },
     error: { type: String },
+    completedAt: { type: Date },
+    canceledAt: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("VideoSchedule", videoScheduleSchema);

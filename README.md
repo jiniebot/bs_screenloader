@@ -1,6 +1,7 @@
 # BrightSign Upload Pipeline (Scaffold)
 
 This repo contains a modular Node.js backend for:
+
 - issuing upload links,
 - receiving uploads,
 - processing videos (mens/womens transforms),

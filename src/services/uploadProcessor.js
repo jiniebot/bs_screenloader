@@ -3,11 +3,19 @@ import fs from "fs/promises";
 import UploadJob from "../models/UploadJob.js";
 import VideoSchedule from "../models/VideoSchedule.js";
 import config from "../config/index.js";
-import { processScreenVideo, ensureDir, assertVideoResolution } from "./videoProcessor.js";
+import {
+  processScreenVideo,
+  ensureDir,
+  assertVideoResolution,
+} from "./videoProcessor.js";
 import { generateBrightsignBundle } from "./brightsignGenerator.js";
 import { uploadToFtp } from "./ftpUploader.js";
+import PlaybackEvent from "../models/PlaybackEvent.js";
 
-export async function processUploadJob(jobId) {
+export async function processUploadJob(
+  jobId,
+  { remoteRoot, ftpUser, ftpPassword, warnIfExists = false } = {},
+) {
   const job = await UploadJob.findById(jobId).populate("screen");
   if (!job) {
     throw new Error(`UploadJob not found: ${jobId}`);
@@ -18,7 +26,10 @@ export async function processUploadJob(jobId) {
 
   await UploadJob.findByIdAndUpdate(jobId, { status: "processing", error: null });
   if (job.schedule) {
-    await VideoSchedule.findByIdAndUpdate(job.schedule, { status: "processing", error: null });
+    await VideoSchedule.findByIdAndUpdate(job.schedule, {
+      status: "processing",
+      error: null,
+    });
   }
 
   const screen = job.screen;
@@ -38,6 +49,8 @@ export async function processUploadJob(jobId) {
     inputPath: job.sourcePath,
     outputPath: processedPath,
     transform: screen.transform,
+    requiredInputWidth: screen.prerequisite?.width,
+    requiredInputHeight: screen.prerequisite?.height,
   });
 
   const templateDir = screen.templateDir;
@@ -57,6 +70,10 @@ export async function processUploadJob(jobId) {
   const ftpPath = await uploadToFtp({
     localDir: bundleResult.outputDir,
     remoteDir,
+    remoteRoot,
+    ftpUser,
+    ftpPassword,
+    warnIfExists,
   });
 
   await UploadJob.findByIdAndUpdate(jobId, {
@@ -66,7 +83,21 @@ export async function processUploadJob(jobId) {
     ftpPath,
   });
   if (job.schedule) {
-    await VideoSchedule.findByIdAndUpdate(job.schedule, { status: "completed" });
+    await VideoSchedule.findByIdAndUpdate(job.schedule, {
+      status: "completed",
+      completedAt: new Date(),
+    });
+    const schedule = await VideoSchedule.findById(job.schedule);
+    if (schedule?.videoAsset) {
+      await PlaybackEvent.create({
+        videoAsset: schedule.videoAsset,
+        timeSlot: schedule.timeSlot,
+        schedule: schedule._id,
+        occurrenceStart: schedule.startDate,
+        occurrenceEnd: schedule.endDate,
+        playedAt: new Date(),
+      });
+    }
   }
 
   return { processedPath, bundleDir: bundleResult.outputDir, ftpPath };
