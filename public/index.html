@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Screen Control</title>
     <link rel="stylesheet" href="/styles.css" />
+    <script>
+      // Applied before paint (blocking, non-module) to avoid a flash of
+      // the wrong theme while the rest of the page's scripts load.
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          if (saved === "dark" || saved === "light") {
+            document.documentElement.setAttribute("data-theme", saved);
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div class="noise"></div>
@@ -18,6 +30,7 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <button id="themeToggle" class="ghost" type="button" aria-label="Toggle dark mode">🌙</button>
           <span id="userBadge" class="badge"></span>
           <button id="logoutBtn" class="ghost">Log out</button>
         </div>
@@ -610,6 +623,7 @@
     </div>
 
     <script src="/vendor/daypilot-javascript.min.js"></script>
+    <script type="module" src="/js/theme.js"></script>
     <script type="module" src="/js/main.js"></script>
   </body>
 </html>

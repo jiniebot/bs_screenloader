@@ -1,13 +1,60 @@
 :root {
   --bg: #ffffff;
   --bg-soft: #f6f6f6;
+  --bg-alt: #f9f9f9;
   --ink: #111111;
   --muted: rgba(17, 17, 17, 0.6);
   --panel: #ffffff;
   --panel-border: rgba(17, 17, 17, 0.12);
+  --border-soft: rgba(17, 17, 17, 0.08);
   --field-bg: #ffffff;
   --field-border: rgba(17, 17, 17, 0.2);
   --shadow: rgba(0, 0, 0, 0.08);
+  --accent: #111111;
+  --accent-ink: #ffffff;
+  --accent2: #c9701f;
+  --danger: #c82828;
+  --overlay: rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1c1f;
+    --bg-soft: #232427;
+    --bg-alt: #26272b;
+    --ink: #d6d7da;
+    --muted: rgba(214, 215, 218, 0.62);
+    --panel: #212226;
+    --panel-border: rgba(255, 255, 255, 0.1);
+    --border-soft: rgba(255, 255, 255, 0.08);
+    --field-bg: #1a1b1e;
+    --field-border: rgba(255, 255, 255, 0.16);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --accent: #9cc2e8;
+    --accent-ink: #10181f;
+    --accent2: #e3ab78;
+    --danger: #e08a8a;
+    --overlay: rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1b1c1f;
+  --bg-soft: #232427;
+  --bg-alt: #26272b;
+  --ink: #d6d7da;
+  --muted: rgba(214, 215, 218, 0.62);
+  --panel: #212226;
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --field-bg: #1a1b1e;
+  --field-border: rgba(255, 255, 255, 0.16);
+  --shadow: rgba(0, 0, 0, 0.5);
+  --accent: #9cc2e8;
+  --accent-ink: #10181f;
+  --accent2: #e3ab78;
+  --danger: #e08a8a;
+  --overlay: rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -22,7 +69,7 @@
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: #ffffff;
+  background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
 }
@@ -73,12 +120,12 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background: #111111;
-  border: 1px solid #111111;
+  background: var(--accent);
+  border: 1px solid var(--accent);
   display: grid;
   place-items: center;
   letter-spacing: 0.2em;
-  color: #ffffff;
+  color: var(--accent-ink);
   font-weight: 600;
 }
 
@@ -101,8 +148,8 @@ body {
 .badge {
   padding: 6px 12px;
   border-radius: 999px;
-  background: #111111;
-  color: #ffffff;
+  background: var(--accent2);
+  color: var(--accent-ink);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -150,7 +197,7 @@ body {
   padding: 14px;
   border-radius: 10px;
   border: 1px solid var(--panel-border);
-  background: #ffffff;
+  background: var(--panel);
   display: grid;
   gap: 10px;
 }
@@ -175,7 +222,7 @@ body {
 }
 
 .requirements {
-  border-top: 1px solid rgba(17, 17, 17, 0.08);
+  border-top: 1px solid var(--border-soft);
   padding-top: 10px;
   font-size: 0.85rem;
   color: var(--muted);
@@ -187,13 +234,13 @@ body {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border: 1px solid rgba(17, 17, 17, 0.15);
+  border: 1px solid var(--panel-border);
 }
 
 .pill.status-used {
-  background: rgba(0, 0, 0, 0.08);
-  color: #111111;
-  border-color: rgba(17, 17, 17, 0.25);
+  background: var(--bg-soft);
+  color: var(--ink);
+  border-color: var(--panel-border);
 }
 
 .form {
@@ -233,8 +280,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 2px solid rgba(0, 0, 0, 0.15);
-  border-color: #111111;
+  outline: 2px solid var(--shadow);
+  border-color: var(--accent);
 }
 
 .primary,
@@ -250,19 +297,19 @@ textarea:focus {
 }
 
 .primary {
-  background: #111111;
-  border: 1px solid #111111;
-  color: #ffffff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--accent-ink);
 }
 
 .primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 14px var(--shadow);
 }
 
 .ghost {
   background: transparent;
-  border: 1px solid rgba(17, 17, 17, 0.2);
+  border: 1px solid var(--field-border);
   color: var(--ink);
 }
 
@@ -273,17 +320,17 @@ textarea:focus {
 }
 
 .ghost.danger {
-  border-color: rgba(200, 40, 40, 0.35);
-  color: #c82828;
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .ghost.danger:hover {
-  background: rgba(200, 40, 40, 0.08);
+  background: var(--shadow);
 }
 
 .divider {
   height: 1px;
-  background: rgba(17, 17, 17, 0.08);
+  background: var(--border-soft);
   margin: 16px 0;
 }
 
@@ -298,8 +345,8 @@ textarea:focus {
   gap: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(17, 17, 17, 0.12);
-  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
   font-size: 0.8rem;
 }
 
@@ -322,8 +369,8 @@ textarea:focus {
   gap: 16px;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid rgba(17, 17, 17, 0.12);
-  background: #ffffff;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
 }
 
 .link-actions {
@@ -339,10 +386,10 @@ textarea:focus {
 }
 
 .list-item {
-  border: 1px solid rgba(17, 17, 17, 0.12);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 10px 12px;
-  background: #ffffff;
+  background: var(--panel);
   overflow-wrap: anywhere;
 }
 
@@ -381,11 +428,11 @@ textarea:focus {
    is what survives and must carry the wrapper styling. */
 #daypilotCalendar {
   min-height: 520px;
-  border: 1px solid rgba(17, 17, 17, 0.12);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
   overflow-x: auto;
   overflow-y: hidden;
-  background: #ffffff;
+  background: var(--panel);
 }
 
 .modal {
@@ -402,7 +449,7 @@ textarea:focus {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay);
   backdrop-filter: blur(4px);
 }
 
@@ -432,7 +479,7 @@ textarea:focus {
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  border: 1px solid rgba(17, 17, 17, 0.2);
+  border: 1px solid var(--field-border);
   background: transparent;
   color: var(--ink);
   font-size: 20px;
@@ -443,13 +490,13 @@ textarea:focus {
   width: 100%;
   height: 8px;
   border-radius: 999px;
-  background: rgba(17, 17, 17, 0.08);
+  background: var(--border-soft);
   overflow: hidden;
 }
 
 .progress-bar {
   height: 100%;
-  background: #111111;
+  background: var(--accent);
   width: 0%;
   transition: width 0.2s ease;
 }
@@ -472,9 +519,9 @@ textarea:focus {
 .month_default_corner_inner,
 .daypilot-root .month_default_header_inner,
 .daypilot-root .month_default_corner_inner {
-  background: #f6f6f6 !important;
+  background: var(--bg-soft) !important;
   color: var(--muted) !important;
-  border-color: rgba(17, 17, 17, 0.12) !important;
+  border-color: var(--panel-border) !important;
   font-weight: 600 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
@@ -483,8 +530,8 @@ textarea:focus {
 
 .month_default_cell_inner,
 .daypilot-root .month_default_cell_inner {
-  background: #ffffff !important;
-  border-color: rgba(17, 17, 17, 0.08) !important;
+  background: var(--panel) !important;
+  border-color: var(--border-soft) !important;
 }
 
 .month_default_cell_header,
@@ -496,8 +543,8 @@ textarea:focus {
 
 .month_default_other .month_default_cell_inner,
 .daypilot-root .month_default_other .month_default_cell_inner {
-  background: #f9f9f9 !important;
-  color: rgba(17, 17, 17, 0.4) !important;
+  background: var(--bg-alt) !important;
+  color: var(--muted) !important;
 }
 
 .month_default_event_inner,
@@ -530,7 +577,7 @@ textarea:focus {
 
 .month_default_today .month_default_cell_inner,
 .daypilot-root .month_default_today .month_default_cell_inner {
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: inset 0 0 0 1px var(--accent) !important;
 }
 
 @media (max-width: 760px) {
