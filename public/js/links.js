@@ -17,6 +17,7 @@ export const loadLinks = async () => {
         <strong>${link.screen}</strong>
         <div class="muted">${link.name || "Untitled"}</div>
         <div class="muted">Start: ${formatDateTime(link.startDate)}</div>
+        <div class="muted">End: ${link.endDate ? formatDateTime(link.endDate) : "Never"}</div>
       </div>
       <div class="link-actions">
         <button class="ghost" data-copy="${url}">Copy link</button>
