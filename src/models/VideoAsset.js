@@ -8,6 +8,7 @@ const videoAssetSchema = new mongoose.Schema(
     mimeType: { type: String, default: "" },
     durationSec: { type: Number },
     sourcePath: { type: String, required: true },
+    r2Key: { type: String },
     thumbnailPath: { type: String },
     notes: { type: String, default: "" },
   },

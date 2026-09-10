@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs/promises";
 import UploadJob from "../models/UploadJob.js";
 import VideoSchedule from "../models/VideoSchedule.js";
+import VideoAsset from "../models/VideoAsset.js";
 import config from "../config/index.js";
 import {
   processScreenVideo,
@@ -13,21 +14,34 @@ import { uploadToFtp } from "./ftpUploader.js";
 import { archiveRawSource, isR2Configured } from "./r2Storage.js";
 import PlaybackEvent from "../models/PlaybackEvent.js";
 
+// Archives the job's raw source to R2 under a key scoped to its VideoAsset
+// (not the job), so a future job re-queueing the same asset can reuse the
+// existing object instead of archiving it again. Then cleans up local disk.
 async function archiveAndCleanup({ job, screenName, processedDir, bundleOutputRoot }) {
   if (!isR2Configured()) {
     console.warn("[uploadProcessor] R2 not configured — skipping archive/cleanup for job", job._id.toString());
     return null;
   }
-  const ext = path.extname(job.sourcePath) || ".mp4";
-  const key = `raw/${screenName}/${job._id.toString()}${ext}`;
-  let r2Key = null;
-  try {
-    await archiveRawSource({ localPath: job.sourcePath, key });
-    r2Key = key;
-  } catch (err) {
-    console.error("[uploadProcessor] Failed to archive raw source to R2, skipping local cleanup", err);
-    return null;
+
+  const asset = job.videoAsset ? await VideoAsset.findById(job.videoAsset) : null;
+
+  let r2Key = asset?.r2Key || null;
+  if (!r2Key) {
+    const ext = path.extname(job.sourcePath) || ".mp4";
+    const assetId = asset?._id?.toString() || job._id.toString();
+    const key = `raw/${screenName}/${assetId}${ext}`;
+    try {
+      await archiveRawSource({ localPath: job.sourcePath, key });
+      r2Key = key;
+      if (asset) {
+        await VideoAsset.findByIdAndUpdate(asset._id, { r2Key: key });
+      }
+    } catch (err) {
+      console.error("[uploadProcessor] Failed to archive raw source to R2, skipping local cleanup", err);
+      return null;
+    }
   }
+
   await Promise.all([
     fs.rm(job.sourcePath, { force: true }),
     fs.rm(processedDir, { recursive: true, force: true }),

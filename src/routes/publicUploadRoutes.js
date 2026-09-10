@@ -140,6 +140,7 @@ router.post("/public/upload/:token", upload.single("file"), async (req, res, nex
       job = await UploadJob.create({
         screen: link.screen?._id,
         schedule: schedule._id,
+        videoAsset: asset._id,
         sourcePath: req.file.path,
         metadata: {
           name: link.name || "",

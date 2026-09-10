@@ -1,5 +1,6 @@
 import fs from "fs";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { pipeline } from "stream/promises";
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import config from "../config/index.js";
 
 let client = null;
@@ -40,4 +41,26 @@ export async function archiveRawSource({ localPath, key, contentType }) {
     }),
   );
   return key;
+}
+
+export async function objectExists(key) {
+  if (!isR2Configured()) return false;
+  try {
+    await getClient().send(new HeadObjectCommand({ Bucket: config.r2.bucket, Key: key }));
+    return true;
+  } catch (err) {
+    if (err?.name === "NotFound" || err?.$metadata?.httpStatusCode === 404) return false;
+    throw err;
+  }
+}
+
+export async function downloadObject({ key, localPath }) {
+  if (!isR2Configured()) {
+    throw new Error("R2 is not configured (missing R2_* env vars)");
+  }
+  const result = await getClient().send(
+    new GetObjectCommand({ Bucket: config.r2.bucket, Key: key }),
+  );
+  await pipeline(result.Body, fs.createWriteStream(localPath));
+  return localPath;
 }

@@ -5,6 +5,7 @@ const uploadJobSchema = new mongoose.Schema(
     uploadLink: { type: mongoose.Schema.Types.ObjectId, ref: "UploadLink" },
     screen: { type: mongoose.Schema.Types.ObjectId, ref: "Screen" },
     schedule: { type: mongoose.Schema.Types.ObjectId, ref: "VideoSchedule" },
+    videoAsset: { type: mongoose.Schema.Types.ObjectId, ref: "VideoAsset" },
     sourcePath: { type: String, required: true },
     processedPath: { type: String },
     outputDir: { type: String },
