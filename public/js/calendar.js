@@ -111,7 +111,10 @@ export const loadCalendar = async () => {
       eventResizeHandling: "Disabled",
       eventDeleteHandling: "Disabled",
       onEventClick: (args) => {
-        const data = args?.e?.data;
+        // args.e.data is the whole event record we built (id/text/start/
+        // end/backColor/.../data) — our own custom payload is nested one
+        // level deeper, under .data.
+        const data = args?.e?.data?.data;
         if (!data || data.__eventType === "link") return;
         openScheduleModal(data, data.__eventType === "schedule" ? "schedule" : "timeslot");
       },
