@@ -1,4 +1,4 @@
-import { combineDateTime } from "./utils.js";
+import { combineDateTime, addDaysToDateString, DEFAULT_DURATION_DAYS } from "./utils.js";
 import { loadSchedules } from "./schedules.js";
 import { loadHistory } from "./history.js";
 import { loadCalendar } from "./calendar.js";
@@ -6,6 +6,15 @@ import { loadCalendar } from "./calendar.js";
 const directUploadForm = document.getElementById("directUploadForm");
 const directStatus = document.getElementById("directStatus");
 const directProgress = document.getElementById("directProgress");
+
+directUploadForm?.startDate?.addEventListener("change", () => {
+  if (!directUploadForm.startDate.value || directUploadForm.endDate.value) return;
+  directUploadForm.endDate.value = addDaysToDateString(
+    directUploadForm.startDate.value,
+    DEFAULT_DURATION_DAYS,
+  );
+  directUploadForm.endTime.value = directUploadForm.startTime.value || "00:00";
+});
 
 directUploadForm?.addEventListener("submit", async (event) => {
   event.preventDefault();

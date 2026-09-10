@@ -1,9 +1,15 @@
 import { apiFetch } from "./api.js";
-import { combineDateTime, formatDateTime } from "./utils.js";
+import { combineDateTime, formatDateTime, addDaysToDateString, DEFAULT_DURATION_DAYS } from "./utils.js";
 
 const linkForm = document.getElementById("linkForm");
 const linkStatus = document.getElementById("linkStatus");
 const linksList = document.getElementById("linksList");
+
+linkForm?.startDate?.addEventListener("change", () => {
+  if (!linkForm.startDate.value || linkForm.endDate.value) return;
+  linkForm.endDate.value = addDaysToDateString(linkForm.startDate.value, DEFAULT_DURATION_DAYS);
+  linkForm.endTime.value = linkForm.startTime.value || "00:00";
+});
 
 export const loadLinks = async () => {
   const data = await apiFetch("/api/links");

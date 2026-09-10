@@ -8,6 +8,7 @@ const uploadTitle = document.getElementById("uploadTitle");
 const uploadSubtitle = document.getElementById("uploadSubtitle");
 const durationLabel = document.getElementById("durationLabel");
 const publicProgress = document.getElementById("publicProgress");
+const submitBtn = form?.querySelector('button[type="submit"]');
 
 const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
@@ -19,10 +20,14 @@ const formatDateTime = (value) => {
   return date.toLocaleString();
 };
 
+const disableUpload = () => {
+  if (submitBtn) submitBtn.disabled = true;
+};
+
 const loadDetails = async () => {
   if (!token) {
     statusEl.textContent = "Missing upload token.";
-    form?.setAttribute("disabled", "true");
+    disableUpload();
     return;
   }
 
@@ -30,6 +35,7 @@ const loadDetails = async () => {
     const response = await fetch(`/api/public/link/${token}`);
     const data = await response.json();
     if (!response.ok) {
+      disableUpload();
       throw new Error(data.error || "Invalid link");
     }
 
@@ -50,6 +56,7 @@ const loadDetails = async () => {
       data.description || "Upload the video file for this schedule.";
   } catch (err) {
     statusEl.textContent = err.message;
+    disableUpload();
   }
 };
 

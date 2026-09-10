@@ -2,7 +2,7 @@ import { apiFetch } from "./api.js";
 import { state } from "./state.js";
 import { combineDateTime, splitDateTime, formatDateTime } from "./utils.js";
 import { createDialog } from "./dialog.js";
-import { loadCalendar } from "./calendar.js";
+import { loadCalendar, renderCalendarEvents } from "./calendar.js";
 import { loadHistory } from "./history.js";
 
 const scheduleRows = document.getElementById("scheduleRows");
@@ -115,6 +115,7 @@ scheduleForm?.addEventListener("submit", async (event) => {
       state.scheduleModal.occurrence.end = endDate
         ? new Date(endDate)
         : new Date(startDate);
+      renderCalendarEvents();
       scheduleStatus.textContent = "Updated. Use Create Upload Link.";
     } else {
       await apiFetch(`/api/schedules/${state.scheduleModal.sourceId}`, {
