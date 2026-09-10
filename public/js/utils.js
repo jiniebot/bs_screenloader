@@ -61,6 +61,3 @@ const screenHue = (screenId) => {
 
 // Light/faded fill for calendar event backgrounds.
 export const getScreenColor = (screenId) => `hsl(${screenHue(screenId)} 55% 88%)`;
-
-// Slightly deeper tone for the calendar event's accent bar, still muted.
-export const getScreenAccentColor = (screenId) => `hsl(${screenHue(screenId)} 45% 70%)`;

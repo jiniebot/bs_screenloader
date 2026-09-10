@@ -1,6 +1,6 @@
 import { apiFetch } from "./api.js";
 import { state } from "./state.js";
-import { getMonthRange, getScreenColor, getScreenAccentColor } from "./utils.js";
+import { getMonthRange, getScreenColor } from "./utils.js";
 import { openScheduleModal } from "./schedules.js";
 
 const calScreenFilter = document.getElementById("calScreenFilter");
@@ -24,7 +24,6 @@ export const renderCalendarEvents = () => {
       start: occ.start,
       end: occ.end,
       backColor: getScreenColor(occ.screenId),
-      barColor: getScreenAccentColor(occ.screenId),
       fontColor: "#0b0d12",
       data: occ,
     }));
@@ -45,7 +44,6 @@ export const renderCalendarEvents = () => {
       start: s.startDate,
       end: s.endDate || s.startDate,
       backColor: getScreenColor(s.screenId),
-      barColor: getScreenAccentColor(s.screenId),
       fontColor: "#0b0d12",
       data: { ...s, __eventType: "schedule" },
     }));

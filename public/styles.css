@@ -512,6 +512,14 @@ textarea:focus {
   color: #111111 !important;
 }
 
+/* The pilled event fill above already carries the screen's color —
+   the separate left accent bar duplicates it as a small floating
+   block, which reads as a rendering glitch. Hide it. */
+.month_default_event_bar,
+.daypilot-root .month_default_event_bar {
+  display: none !important;
+}
+
 .month_default_today .month_default_cell_inner,
 .daypilot-root .month_default_today .month_default_cell_inner {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25) !important;
