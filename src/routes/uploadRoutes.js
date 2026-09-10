@@ -10,11 +10,12 @@ import {
   assertVideoResolution,
   readVideoDurationSeconds,
 } from "../services/videoProcessor.js";
+import { videoFileFilter } from "../services/uploadValidation.js";
 import config from "../config/index.js";
 import { authRequired } from "../middleware/auth.js";
 
 const router = express.Router();
-const upload = multer({ dest: config.uploadsDir });
+const upload = multer({ dest: config.uploadsDir, fileFilter: videoFileFilter });
 
 function canAccessScreen(user, screen) {
   if (user.role === "admin") return true;

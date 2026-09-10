@@ -10,9 +10,10 @@ import {
   assertVideoResolution,
   readVideoDurationSeconds,
 } from "../services/videoProcessor.js";
+import { videoFileFilter } from "../services/uploadValidation.js";
 
 const router = express.Router();
-const upload = multer({ dest: config.uploadsDir });
+const upload = multer({ dest: config.uploadsDir, fileFilter: videoFileFilter });
 
 router.get("/public/link/:token", async (req, res, next) => {
   try {
