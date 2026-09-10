@@ -3,7 +3,18 @@ dist/
 .env
 .DS_Store
 .vscode/
+
+# Generated video output bundles (screen-specific, produced by the pipeline)
 outputs/
+
+# Raw/input source video assets
 source/
+
+# Runtime scratch dirs
 tmp/
 uploads/
+
+# Upload history exports
+upload-history.csv
+upload-history.ics
+upload-history-by-month/
