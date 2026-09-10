@@ -1,7 +1,7 @@
 import path from "path";
-import { createBrightsignProject } from "../../scripts/create-brightsign-project.js";
+import { createJiniescreenProject } from "../../scripts/create-jiniescreen-project.js";
 
-export async function generateBrightsignBundle({
+export async function generateJiniescreenBundle({
   videoPath,
   playerName,
   outputRoot,
@@ -12,7 +12,7 @@ export async function generateBrightsignBundle({
     ? path.join(outputRoot, playerName)
     : path.resolve(process.cwd(), playerName);
 
-  return createBrightsignProject({
+  return createJiniescreenProject({
     videoPath,
     playerName,
     outDir,

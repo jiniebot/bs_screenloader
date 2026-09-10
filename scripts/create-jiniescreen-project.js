@@ -21,10 +21,10 @@ const TEMPLATE_ITEMS = [
 function usage() {
   return [
     "Usage:",
-    "  node scripts/create-brightsign-project.js <video-file> <player-name> [--out <output-dir>] [--template <template-dir>] [--base <base-url>]",
+    "  node scripts/create-jiniescreen-project.js <video-file> <player-name> [--out <output-dir>] [--template <template-dir>] [--base <base-url>]",
     "",
     "Example:",
-    '  node scripts/create-brightsign-project.js /path/to/video.mp4 "Store 12" --out ./store12',
+    '  node scripts/create-jiniescreen-project.js /path/to/video.mp4 "Store 12" --out ./store12',
   ].join("\n");
 }
 
@@ -174,7 +174,7 @@ async function resolveTemplateRoot(playerName, templateDir) {
   return path.resolve(__dirname, "..");
 }
 
-export async function createBrightsignProject({
+export async function createJiniescreenProject({
   videoPath: inputVideoPath,
   playerName,
   outDir,
@@ -429,14 +429,14 @@ async function main() {
   }
 
   try {
-    const result = await createBrightsignProject({
+    const result = await createJiniescreenProject({
       videoPath: parsed.videoPath,
       playerName: parsed.playerName,
       outDir: parsed.outDir,
       templateDir: parsed.templateDir,
       baseUrl: parsed.baseUrl,
     });
-    console.log(`Created BrightSign project at ${result.outputDir}`);
+    console.log(`Created JinieScreen project at ${result.outputDir}`);
   } catch (err) {
     console.error(err.message || err);
     process.exit(1);

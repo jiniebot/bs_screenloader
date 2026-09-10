@@ -9,7 +9,7 @@ import {
   ensureDir,
   assertVideoResolution,
 } from "./videoProcessor.js";
-import { generateBrightsignBundle } from "./brightsignGenerator.js";
+import { generateJiniescreenBundle } from "./jiniescreenGenerator.js";
 import { uploadToFtp } from "./ftpUploader.js";
 import { archiveRawSource, isR2Configured } from "./r2Storage.js";
 import PlaybackEvent from "../models/PlaybackEvent.js";
@@ -96,7 +96,7 @@ export async function processUploadJob(
 
   await fs.rm(bundleOutputRoot, { recursive: true, force: true });
 
-  const bundleResult = await generateBrightsignBundle({
+  const bundleResult = await generateJiniescreenBundle({
     videoPath: processedPath,
     playerName: screen.destinationFolder,
     outputRoot: bundleOutputRoot,

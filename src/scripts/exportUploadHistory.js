@@ -70,7 +70,7 @@ function buildIcs(jobs) {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//brightsign-uploader//upload-history//EN",
+    "PRODID:-//jiniescreen//upload-history//EN",
     "CALSCALE:GREGORIAN",
   ];
 
@@ -91,7 +91,7 @@ function buildIcs(jobs) {
 
     lines.push(
       "BEGIN:VEVENT",
-      `UID:${job._id}@brightsign-uploader`,
+      `UID:${job._id}@jiniescreen`,
       `DTSTAMP:${now}`,
       `DTSTART:${start}`,
       `DTEND:${end}`,

@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "bs-api",
+      name: "jiniescreen-api",
       script: "src/index.js",
       cwd: __dirname,
       instances: 1,
@@ -16,7 +16,7 @@ module.exports = {
       },
     },
     {
-      name: "bs-worker",
+      name: "jiniescreen-worker",
       script: "src/workers/uploadWorker.js",
       cwd: __dirname,
       instances: 1,

@@ -6,6 +6,7 @@ dist/
 
 # Generated video output bundles (screen-specific, produced by the pipeline)
 outputs/
+scripts/output/
 
 # Raw/input source video assets
 source/
