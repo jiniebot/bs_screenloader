@@ -520,6 +520,14 @@ textarea:focus {
   display: none !important;
 }
 
+/* Upload links awaiting a video — dashed to distinguish from an
+   actual scheduled/uploaded video's solid pill. */
+.cal-event-pending .month_default_event_inner,
+.daypilot-root .cal-event-pending .month_default_event_inner {
+  border: 1px dashed rgba(17, 17, 17, 0.35) !important;
+  opacity: 0.8;
+}
+
 .month_default_today .month_default_cell_inner,
 .daypilot-root .month_default_today .month_default_cell_inner {
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25) !important;

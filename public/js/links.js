@@ -1,4 +1,5 @@
 import { apiFetch } from "./api.js";
+import { state } from "./state.js";
 import { combineDateTime, formatDateTime, addDaysToDateString, DEFAULT_DURATION_DAYS } from "./utils.js";
 
 const linkForm = document.getElementById("linkForm");
@@ -13,8 +14,9 @@ linkForm?.startDate?.addEventListener("change", () => {
 
 export const loadLinks = async () => {
   const data = await apiFetch("/api/links");
+  state.links = data.links || [];
   linksList.innerHTML = "";
-  (data.links || []).forEach((link) => {
+  state.links.forEach((link) => {
     const row = document.createElement("div");
     row.className = "link-row";
     const url = `${window.location.origin}/upload.html?token=${link.token}`;

@@ -48,7 +48,30 @@ export const renderCalendarEvents = () => {
       data: { ...s, __eventType: "schedule" },
     }));
 
-  state.daypilotCalendar.events.list = [...timeSlotEvents, ...scheduleEvents];
+  // Upload links that haven't been used yet — no video uploaded, so no
+  // VideoSchedule exists for them. Once a link is used, its upload creates
+  // a schedule (already covered above), so only show still-pending ones
+  // here to avoid showing the same window twice.
+  const linkEvents = (state.links || [])
+    .filter((l) => l.status === "active")
+    .filter((l) => filterScreenId === "all" || l.screenId === filterScreenId)
+    .filter((l) => {
+      const start = new Date(l.startDate);
+      const end = l.endDate ? new Date(l.endDate) : start;
+      return start <= range.end && end >= range.start;
+    })
+    .map((l) => ({
+      id: `link-${l.id}`,
+      text: `${l.name || "Untitled"} · pending upload`,
+      start: l.startDate,
+      end: l.endDate || l.startDate,
+      backColor: getScreenColor(l.screenId),
+      fontColor: "#0b0d12",
+      cssClass: "cal-event-pending",
+      data: { ...l, __eventType: "link" },
+    }));
+
+  state.daypilotCalendar.events.list = [...timeSlotEvents, ...scheduleEvents, ...linkEvents];
   state.daypilotCalendar.update();
 };
 
@@ -89,9 +112,8 @@ export const loadCalendar = async () => {
       eventDeleteHandling: "Disabled",
       onEventClick: (args) => {
         const data = args?.e?.data;
-        if (data) {
-          openScheduleModal(data, data.__eventType === "schedule" ? "schedule" : "timeslot");
-        }
+        if (!data || data.__eventType === "link") return;
+        openScheduleModal(data, data.__eventType === "schedule" ? "schedule" : "timeslot");
       },
     });
     state.daypilotCalendar.init();

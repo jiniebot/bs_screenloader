@@ -1,6 +1,7 @@
 export const state = {
   screens: [],
   schedules: [],
+  links: [],
   occurrences: [],
   groups: [],
   daypilotCalendar: null,

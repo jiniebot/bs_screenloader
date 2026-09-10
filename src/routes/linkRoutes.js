@@ -88,6 +88,7 @@ router.get("/links", authRequired, async (req, res, next) => {
         id: link._id,
         token: link.token,
         screen: link.screen?.name || "Unknown",
+        screenId: link.screen?._id,
         name: link.name || "",
         description: link.description || "",
         startDate: link.startDate,
