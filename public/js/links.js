@@ -22,6 +22,7 @@ export const loadLinks = async () => {
       <div class="link-actions">
         <button class="ghost" data-copy="${url}">Copy link</button>
         <span class="pill ${link.status === "used" ? "status-used" : ""}">${link.status}</span>
+        <button class="ghost danger" data-delete="${link.id}">Delete</button>
       </div>
     `;
     linksList.appendChild(row);
@@ -32,6 +33,20 @@ export const loadLinks = async () => {
       navigator.clipboard.writeText(btn.dataset.copy);
       btn.textContent = "Copied";
       setTimeout(() => (btn.textContent = "Copy link"), 1200);
+    });
+  });
+
+  linksList.querySelectorAll("[data-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!window.confirm("Delete this upload link? This cannot be undone.")) return;
+      btn.disabled = true;
+      try {
+        await apiFetch(`/api/links/${btn.dataset.delete}`, { method: "DELETE" });
+        await loadLinks();
+      } catch (err) {
+        linkStatus.textContent = err.message;
+        btn.disabled = false;
+      }
     });
   });
 };

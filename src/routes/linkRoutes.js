@@ -103,4 +103,21 @@ router.get("/links", authRequired, async (req, res, next) => {
   }
 });
 
+router.delete("/links/:id", authRequired, async (req, res, next) => {
+  try {
+    const link = await UploadLink.findById(req.params.id).populate("screen");
+    if (!link) {
+      return res.status(404).json({ error: "Link not found." });
+    }
+    if (req.user.role !== "admin" && link.issuedBy?.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Forbidden." });
+    }
+
+    await UploadLink.findByIdAndDelete(req.params.id);
+    return res.json({ ok: true });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 export default router;

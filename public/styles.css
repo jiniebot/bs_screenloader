@@ -272,6 +272,15 @@ textarea:focus {
   color: var(--ink);
 }
 
+.ghost.danger {
+  border-color: rgba(200, 40, 40, 0.35);
+  color: #c82828;
+}
+
+.ghost.danger:hover {
+  background: rgba(200, 40, 40, 0.08);
+}
+
 .divider {
   height: 1px;
   background: rgba(17, 17, 17, 0.08);
