@@ -33,6 +33,9 @@ const screenSchema = new mongoose.Schema(
     playbackStatusChangedAt: { type: Date },
     playbackCheckedAt: { type: Date },
     playbackConsecutiveFailures: { type: Number, default: 0 },
+    pendingContentFilename: { type: String },
+    pendingContentScheduleName: { type: String },
+    pendingContentSetAt: { type: Date },
   },
   { timestamps: true },
 );

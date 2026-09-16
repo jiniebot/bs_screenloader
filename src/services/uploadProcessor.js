@@ -13,8 +13,7 @@ import { generateJiniescreenBundle } from "./jiniescreenGenerator.js";
 import { uploadToFtp } from "./ftpUploader.js";
 import { archiveRawSource, isR2Configured } from "./r2Storage.js";
 import PlaybackEvent from "../models/PlaybackEvent.js";
-import { captureScreenSnapshot } from "./brightSignService.js";
-import { notifyContentLive } from "./notificationService.js";
+import Screen from "../models/Screen.js";
 
 // Archives the job's raw source to R2 under a key scoped to its VideoAsset
 // (not the job), so a future job re-queueing the same asset can reuse the
@@ -75,7 +74,13 @@ export async function processUploadJob(
   const screen = job.screen;
   const screenName = screen.name;
   const processedDir = path.join(config.tempDir, screenName, job._id.toString());
-  const processedPath = path.join(processedDir, `${screenName}.mp4`);
+  // The filename is included in the bundle's manifest and shows up in the
+  // player's playback log, so it needs to change per upload — otherwise the
+  // log can't distinguish "still looping the old ad" from "new ad started".
+  const processedPath = path.join(
+    processedDir,
+    `${screenName}-${job._id.toString().slice(-8)}.mp4`,
+  );
 
   await ensureDir(processedDir);
 
@@ -148,18 +153,16 @@ export async function processUploadJob(
     }
 
     if (screen.brightSignSerial) {
-      try {
-        const snapshot = await captureScreenSnapshot(screen.brightSignSerial);
-        await notifyContentLive(screen, {
-          scheduleName: schedule?.name,
-          snapshotDataUrl: snapshot.dataUrl,
-        });
-      } catch (err) {
-        console.error(
-          `[uploadProcessor] Failed to send content-live notification for screen ${screen.name}:`,
-          err,
-        );
-      }
+      // The player doesn't pick this up immediately — it can take 5-10
+      // minutes to sync and start playing. playbackMonitor watches the
+      // player's own playback log for this exact filename and sends the
+      // "now playing" email once the player confirms it, rather than us
+      // guessing based on upload completion time.
+      await Screen.findByIdAndUpdate(screen._id, {
+        pendingContentFilename: path.basename(processedPath),
+        pendingContentScheduleName: schedule?.name || "",
+        pendingContentSetAt: new Date(),
+      });
     }
   }
 

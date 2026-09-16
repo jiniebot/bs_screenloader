@@ -1,10 +1,68 @@
 import config from "../config/index.js";
 import { connectMongo } from "../db/mongo.js";
 import Screen from "../models/Screen.js";
-import { captureScreenSnapshot } from "../services/brightSignService.js";
-import { notifyPlaybackStopped, notifyPlaybackResumed } from "../services/notificationService.js";
+import {
+  captureScreenSnapshot,
+  fetchPlayerLogText,
+  parsePlaybackLogEntries,
+} from "../services/brightSignService.js";
+import {
+  notifyPlaybackStopped,
+  notifyPlaybackResumed,
+  notifyContentLive,
+} from "../services/notificationService.js";
+
+const PENDING_CONTENT_TIMEOUT_MS = 60 * 60 * 1000; // give up watching after 1h
+
+async function checkPendingContent(screen) {
+  if (!screen.pendingContentFilename) return;
+
+  if (Date.now() - new Date(screen.pendingContentSetAt).getTime() > PENDING_CONTENT_TIMEOUT_MS) {
+    console.warn(
+      `[playbackMonitor] Gave up waiting for ${screen.pendingContentFilename} to appear in ${screen.name}'s playback log.`,
+    );
+    await Screen.findByIdAndUpdate(screen._id, {
+      pendingContentFilename: null,
+      pendingContentScheduleName: null,
+      pendingContentSetAt: null,
+    });
+    return;
+  }
+
+  let logText;
+  try {
+    logText = await fetchPlayerLogText(screen.brightSignSerial);
+  } catch (err) {
+    console.warn(`[playbackMonitor] Failed to fetch logs for ${screen.name}:`, err.message);
+    return;
+  }
+
+  const entries = parsePlaybackLogEntries(logText);
+  const confirmed = entries.some((entry) => entry.filename === screen.pendingContentFilename);
+  if (!confirmed) return;
+
+  let snapshotDataUrl;
+  try {
+    snapshotDataUrl = (await captureScreenSnapshot(screen.brightSignSerial)).dataUrl;
+  } catch {
+    snapshotDataUrl = undefined;
+  }
+
+  await notifyContentLive(screen, {
+    scheduleName: screen.pendingContentScheduleName,
+    snapshotDataUrl,
+  });
+
+  await Screen.findByIdAndUpdate(screen._id, {
+    pendingContentFilename: null,
+    pendingContentScheduleName: null,
+    pendingContentSetAt: null,
+  });
+}
 
 async function checkScreen(screen) {
+  await checkPendingContent(screen);
+
   let reachable = true;
   try {
     await captureScreenSnapshot(screen.brightSignSerial);
