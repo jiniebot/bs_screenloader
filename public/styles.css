@@ -477,6 +477,18 @@ textarea:focus {
   margin-bottom: 16px;
 }
 
+.screenshot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.screenshot-body img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+}
+
 .icon-btn {
   width: 36px;
   height: 36px;

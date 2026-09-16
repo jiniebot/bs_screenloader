@@ -530,6 +530,10 @@
                     <input id="editOffsetY" name="offsetY" type="number" />
                   </div>
                 </div>
+                <div class="field">
+                  <label for="editBrightSignSerial">BrightSign serial (for screenshots)</label>
+                  <input id="editBrightSignSerial" name="brightSignSerial" type="text" />
+                </div>
                 <button type="submit" class="ghost">Save changes</button>
                 <div id="screenEditStatus" class="status"></div>
               </form>
@@ -619,6 +623,30 @@
           </div>
           <div id="scheduleStatus" class="status"></div>
         </form>
+      </div>
+    </div>
+
+    <div class="modal" id="screenshotModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="screenshot"></div>
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="screenshotModalHeading"
+      >
+        <div class="modal-header">
+          <div>
+            <h3 id="screenshotModalHeading">Screenshot</h3>
+            <p id="screenshotModalTitle"></p>
+          </div>
+          <button class="icon-btn" data-close="screenshot" aria-label="Close dialog">
+            ×
+          </button>
+        </div>
+        <div id="screenshotModalBody" class="screenshot-body">
+          <div id="screenshotStatus" class="status"></div>
+          <img id="screenshotImage" alt="Current screen content" hidden />
+        </div>
       </div>
     </div>
 

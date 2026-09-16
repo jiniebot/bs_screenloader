@@ -2,6 +2,7 @@ import express from "express";
 import Screen from "../models/Screen.js";
 import Group from "../models/Group.js";
 import { authRequired, requireRole } from "../middleware/auth.js";
+import { captureScreenSnapshot } from "../services/brightSignService.js";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ function screenPayload(screen) {
     transform: screen.transform,
     durationMinSec: screen.durationMinSec,
     durationMaxSec: screen.durationMaxSec,
+    brightSignSerial: screen.brightSignSerial,
   };
 }
 
@@ -123,5 +125,26 @@ router.patch(
     }
   },
 );
+
+router.post("/screens/:id/screenshot", authRequired, async (req, res, next) => {
+  try {
+    const screen = await Screen.findById(req.params.id);
+    if (!screen) {
+      return res.status(404).json({ error: "Screen not found." });
+    }
+
+    if (req.user.role !== "admin") {
+      const groupIds = (req.user.groups || []).map((g) => String(g._id));
+      if (!screen.group || !groupIds.includes(String(screen.group))) {
+        return res.status(403).json({ error: "Forbidden." });
+      }
+    }
+
+    const snapshot = await captureScreenSnapshot(screen.brightSignSerial);
+    return res.json(snapshot);
+  } catch (err) {
+    return next(err);
+  }
+});
 
 export default router;

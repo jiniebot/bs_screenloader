@@ -82,6 +82,10 @@ const config = {
     maxSec: process.env.DURATION_MAX_SEC ? Number(process.env.DURATION_MAX_SEC) : null,
   },
   linkExpiryDays: Number(process.env.LINK_EXPIRY_DAYS || 7),
+  bsnCloud: {
+    clientId: process.env.BSN_CLIENTID || "",
+    clientSecret: process.env.BSN_CLIENTSECRET || "",
+  },
 };
 
 export default config;

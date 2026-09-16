@@ -23,6 +23,7 @@ const screenSchema = new mongoose.Schema(
     },
     durationMinSec: { type: Number },
     durationMaxSec: { type: Number },
+    brightSignSerial: { type: String },
   },
   { timestamps: true },
 );

@@ -1,6 +1,7 @@
 import { apiFetch } from "./api.js";
 import { state } from "./state.js";
 import { loadCalendar } from "./calendar.js";
+import { createDialog } from "./dialog.js";
 
 const screensGrid = document.getElementById("screensGrid");
 const linkScreenSelect = document.getElementById("linkScreen");
@@ -15,6 +16,32 @@ const screenEditStatus = document.getElementById("screenEditStatus");
 const editScreenSelect = document.getElementById("editScreenSelect");
 const editGroupSelect = document.getElementById("editGroup");
 const screenAssignList = document.getElementById("screenAssignList");
+
+const screenshotModalEl = document.getElementById("screenshotModal");
+const screenshotModalTitle = document.getElementById("screenshotModalTitle");
+const screenshotStatus = document.getElementById("screenshotStatus");
+const screenshotImage = document.getElementById("screenshotImage");
+const screenshotDialog = screenshotModalEl ? createDialog(screenshotModalEl) : null;
+
+document.querySelectorAll('[data-close="screenshot"]').forEach((btn) => {
+  btn.addEventListener("click", () => screenshotDialog?.close());
+});
+
+const openScreenshot = async (screen) => {
+  if (!screenshotDialog) return;
+  screenshotImage.hidden = true;
+  screenshotModalTitle.textContent = screen.name;
+  screenshotStatus.textContent = "Requesting snapshot from player...";
+  screenshotDialog.open();
+  try {
+    const data = await apiFetch(`/api/screens/${screen.id}/screenshot`, { method: "POST" });
+    screenshotImage.src = data.dataUrl;
+    screenshotImage.hidden = false;
+    screenshotStatus.textContent = data.timestamp ? `Captured ${data.timestamp}` : "";
+  } catch (err) {
+    screenshotStatus.textContent = err.message;
+  }
+};
 
 export const loadScreens = async () => {
   const data = await apiFetch("/api/screens");
@@ -40,8 +67,15 @@ export const loadScreens = async () => {
         <span class="label">Requirements</span>
         <p>MP4 · ${screen.prerequisite?.width || "?"}x${screen.prerequisite?.height || "?"}</p>
       </div>
+      ${
+        screen.brightSignSerial
+          ? `<button type="button" class="ghost screenshot-btn">Screenshot</button>`
+          : ""
+      }
     `;
     screensGrid.appendChild(card);
+
+    card.querySelector(".screenshot-btn")?.addEventListener("click", () => openScreenshot(screen));
 
     const opt = document.createElement("option");
     opt.value = screen.id;
@@ -138,6 +172,7 @@ export const applyScreenToEdit = (screen) => {
   screenEditForm.offsetY.value = screen.transform?.offsetY ?? 0;
   screenEditForm.durationMinSec.value = screen.durationMinSec ?? "";
   screenEditForm.durationMaxSec.value = screen.durationMaxSec ?? "";
+  screenEditForm.brightSignSerial.value = screen.brightSignSerial ?? "";
   editGroupSelect.value = screen.group?._id || screen.group?.id || "";
 };
 
@@ -215,6 +250,7 @@ screenEditForm?.addEventListener("submit", async (event) => {
       durationMaxSec: screenEditForm.durationMaxSec.value
         ? Number(screenEditForm.durationMaxSec.value)
         : undefined,
+      brightSignSerial: screenEditForm.brightSignSerial.value || null,
     };
     await apiFetch(`/api/screens/${screenId}`, {
       method: "PATCH",
