@@ -6,6 +6,7 @@ const groupSchema = new mongoose.Schema(
     description: { type: String, default: "" },
     details: { type: String, default: "" },
     screens: [{ type: mongoose.Schema.Types.ObjectId, ref: "Screen" }],
+    notifyEmails: { type: [String], default: [] },
   },
   { timestamps: true },
 );

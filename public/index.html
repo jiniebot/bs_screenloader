@@ -355,6 +355,10 @@
                   <label for="groupDescription">Description</label>
                   <textarea id="groupDescription" name="description" rows="2"></textarea>
                 </div>
+                <div class="field">
+                  <label for="groupNotifyEmails">Notify emails (comma-separated)</label>
+                  <input id="groupNotifyEmails" name="notifyEmails" type="text" />
+                </div>
                 <button type="submit" class="ghost">Create group</button>
                 <div id="groupStatus" class="status"></div>
               </form>
@@ -533,6 +537,10 @@
                 <div class="field">
                   <label for="editBrightSignSerial">BrightSign serial (for screenshots)</label>
                   <input id="editBrightSignSerial" name="brightSignSerial" type="text" />
+                </div>
+                <div class="field">
+                  <label for="editNotifyEmails">Notify emails (comma-separated)</label>
+                  <input id="editNotifyEmails" name="notifyEmails" type="text" />
                 </div>
                 <button type="submit" class="ghost">Save changes</button>
                 <div id="screenEditStatus" class="status"></div>

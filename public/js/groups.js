@@ -27,6 +27,35 @@ export const loadGroups = async () => {
       <div class="muted">Screens: ${group.screens.length}</div>
       <div class="muted">ID: ${group.id}</div>
     `;
+
+    const notifyField = document.createElement("div");
+    notifyField.className = "field";
+    notifyField.innerHTML = `
+      <label>Notify emails (comma-separated)</label>
+      <input type="text" value="${(group.notifyEmails || []).join(", ")}" />
+      <button type="button" class="ghost small">Save</button>
+      <span class="status"></span>
+    `;
+    const notifyInput = notifyField.querySelector("input");
+    const notifyStatus = notifyField.querySelector(".status");
+    notifyField.querySelector("button").addEventListener("click", async () => {
+      notifyStatus.textContent = "Saving...";
+      try {
+        const notifyEmails = notifyInput.value
+          .split(",")
+          .map((e) => e.trim())
+          .filter(Boolean);
+        await apiFetch(`/api/groups/${group.id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ notifyEmails }),
+        });
+        notifyStatus.textContent = "Saved.";
+      } catch (err) {
+        notifyStatus.textContent = err.message;
+      }
+    });
+    item.appendChild(notifyField);
+
     groupList.appendChild(item);
 
     const opt = document.createElement("option");
@@ -52,6 +81,10 @@ groupForm?.addEventListener("submit", async (event) => {
     const body = {
       name: groupForm.name.value,
       description: groupForm.description.value,
+      notifyEmails: groupForm.notifyEmails.value
+        .split(",")
+        .map((e) => e.trim())
+        .filter(Boolean),
     };
     await apiFetch("/api/groups", { method: "POST", body: JSON.stringify(body) });
     groupStatus.textContent = "Group created.";

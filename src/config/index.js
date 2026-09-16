@@ -86,6 +86,15 @@ const config = {
     clientId: process.env.BSN_CLIENTID || "",
     clientSecret: process.env.BSN_CLIENTSECRET || "",
   },
+  mail: {
+    fromAddress: process.env.MAIL_FROM || "",
+    smtpHost: process.env.SMTP_HOST || "127.0.0.1",
+    smtpPort: Number(process.env.SMTP_PORT || 25),
+  },
+  monitor: {
+    pollMs: Number(process.env.MONITOR_POLL_MS || 5 * 60 * 1000),
+    failureThreshold: Number(process.env.MONITOR_FAILURE_THRESHOLD || 2),
+  },
 };
 
 export default config;

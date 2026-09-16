@@ -243,6 +243,23 @@ body {
   border-color: var(--panel-border);
 }
 
+.pill-online {
+  background: #1f4d2c;
+  color: #a7e3b5;
+  border-color: #2e7d43;
+}
+
+.pill-offline {
+  background: #4d1f1f;
+  color: #e3a7a7;
+  border-color: #7d2e2e;
+}
+
+.pill-unknown {
+  background: var(--bg-soft);
+  color: var(--muted);
+}
+
 .form {
   display: grid;
   gap: 14px;

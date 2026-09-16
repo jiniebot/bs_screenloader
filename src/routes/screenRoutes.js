@@ -21,6 +21,10 @@ function screenPayload(screen) {
     durationMinSec: screen.durationMinSec,
     durationMaxSec: screen.durationMaxSec,
     brightSignSerial: screen.brightSignSerial,
+    notifyEmails: screen.notifyEmails || [],
+    playbackStatus: screen.playbackStatus,
+    playbackCheckedAt: screen.playbackCheckedAt,
+    playbackStatusChangedAt: screen.playbackStatusChangedAt,
   };
 }
 

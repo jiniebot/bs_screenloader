@@ -69,7 +69,8 @@ export const loadScreens = async () => {
       </div>
       ${
         screen.brightSignSerial
-          ? `<button type="button" class="ghost screenshot-btn">Screenshot</button>`
+          ? `<p class="meta">Status: <span class="pill pill-${screen.playbackStatus || "unknown"}">${screen.playbackStatus || "unknown"}</span></p>
+             <button type="button" class="ghost screenshot-btn">Screenshot</button>`
           : ""
       }
     `;
@@ -173,6 +174,7 @@ export const applyScreenToEdit = (screen) => {
   screenEditForm.durationMinSec.value = screen.durationMinSec ?? "";
   screenEditForm.durationMaxSec.value = screen.durationMaxSec ?? "";
   screenEditForm.brightSignSerial.value = screen.brightSignSerial ?? "";
+  screenEditForm.notifyEmails.value = (screen.notifyEmails || []).join(", ");
   editGroupSelect.value = screen.group?._id || screen.group?.id || "";
 };
 
@@ -251,6 +253,10 @@ screenEditForm?.addEventListener("submit", async (event) => {
         ? Number(screenEditForm.durationMaxSec.value)
         : undefined,
       brightSignSerial: screenEditForm.brightSignSerial.value || null,
+      notifyEmails: screenEditForm.notifyEmails.value
+        .split(",")
+        .map((e) => e.trim())
+        .filter(Boolean),
     };
     await apiFetch(`/api/screens/${screenId}`, {
       method: "PATCH",

@@ -15,6 +15,7 @@ router.get("/groups", authRequired, requireRole("admin"), async (req, res, next)
         description: g.description || "",
         details: g.details || "",
         screens: g.screens || [],
+        notifyEmails: g.notifyEmails || [],
       })),
     });
   } catch (err) {
@@ -24,7 +25,7 @@ router.get("/groups", authRequired, requireRole("admin"), async (req, res, next)
 
 router.post("/groups", authRequired, requireRole("admin"), async (req, res, next) => {
   try {
-    const { name, description, details, screenIds } = req.body;
+    const { name, description, details, screenIds, notifyEmails } = req.body;
     if (!name) {
       return res.status(400).json({ error: "Name is required." });
     }
@@ -33,6 +34,7 @@ router.post("/groups", authRequired, requireRole("admin"), async (req, res, next
       description: description || "",
       details: details || "",
       screens: Array.isArray(screenIds) ? screenIds : [],
+      notifyEmails: Array.isArray(notifyEmails) ? notifyEmails : [],
     });
     return res.status(201).json({ id: group._id });
   } catch (err) {
@@ -46,13 +48,15 @@ router.patch(
   requireRole("admin"),
   async (req, res, next) => {
     try {
-      const { name, description, details, screenIds } = req.body;
+      const { name, description, details, screenIds, notifyEmails } = req.body;
       const update = {};
       if (name !== undefined) update.name = name;
       if (description !== undefined) update.description = description;
       if (details !== undefined) update.details = details;
       if (screenIds !== undefined)
         update.screens = Array.isArray(screenIds) ? screenIds : [];
+      if (notifyEmails !== undefined)
+        update.notifyEmails = Array.isArray(notifyEmails) ? notifyEmails : [];
 
       const group = await Group.findByIdAndUpdate(req.params.id, update, { new: true });
       if (!group) {

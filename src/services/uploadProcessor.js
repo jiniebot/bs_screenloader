@@ -13,6 +13,8 @@ import { generateJiniescreenBundle } from "./jiniescreenGenerator.js";
 import { uploadToFtp } from "./ftpUploader.js";
 import { archiveRawSource, isR2Configured } from "./r2Storage.js";
 import PlaybackEvent from "../models/PlaybackEvent.js";
+import { captureScreenSnapshot } from "./brightSignService.js";
+import { notifyContentLive } from "./notificationService.js";
 
 // Archives the job's raw source to R2 under a key scoped to its VideoAsset
 // (not the job), so a future job re-queueing the same asset can reuse the
@@ -143,6 +145,21 @@ export async function processUploadJob(
         occurrenceEnd: schedule.endDate,
         playedAt: new Date(),
       });
+    }
+
+    if (screen.brightSignSerial) {
+      try {
+        const snapshot = await captureScreenSnapshot(screen.brightSignSerial);
+        await notifyContentLive(screen, {
+          scheduleName: schedule?.name,
+          snapshotDataUrl: snapshot.dataUrl,
+        });
+      } catch (err) {
+        console.error(
+          `[uploadProcessor] Failed to send content-live notification for screen ${screen.name}:`,
+          err,
+        );
+      }
     }
   }
 

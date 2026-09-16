@@ -24,6 +24,15 @@ const screenSchema = new mongoose.Schema(
     durationMinSec: { type: Number },
     durationMaxSec: { type: Number },
     brightSignSerial: { type: String },
+    notifyEmails: { type: [String], default: [] },
+    playbackStatus: {
+      type: String,
+      enum: ["unknown", "online", "offline"],
+      default: "unknown",
+    },
+    playbackStatusChangedAt: { type: Date },
+    playbackCheckedAt: { type: Date },
+    playbackConsecutiveFailures: { type: Number, default: 0 },
   },
   { timestamps: true },
 );
